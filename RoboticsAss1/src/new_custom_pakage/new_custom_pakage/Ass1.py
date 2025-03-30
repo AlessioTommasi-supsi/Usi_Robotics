@@ -17,10 +17,10 @@ class Drawer(Node):
         :param segments: lista di dizionari, es:
             [
               {
-                "type": "move" or "rotate",
-                "duration": 20,              # numero di 'tick' (0.1s ciascuno)
-                "linear_speed": 1.0,
-                "angular_speed": 0.5
+                "type": "move" o "rotate",
+                "duration": numero di tick (0.1s ciascuno),
+                "linear_speed": velocità lineare,
+                "angular_speed": velocità angolare
               },
               ...
             ]
@@ -55,13 +55,13 @@ class Drawer(Node):
         self.done = False
 
     def pose_callback(self, pose):
-        # Debug: stampiamo la posizione (livello di log debug)
+        # Debug: stampo la posizione
         self.get_logger().debug(
             f"[{self.turtle_name}] Pose: x={pose.x:.2f}, y={pose.y:.2f}, theta={pose.theta:.2f}"
         )
 
     def timer_callback(self):
-        # Se abbiamo finito tutti i segmenti, fermiamo il timer e segniamo il completamento
+        # Se abbiamo finito tutti i segmenti, fermiamo il timer e segnaliamo il completamento
         if self.current_segment_index >= len(self.segments):
             self.get_logger().info(f"Lettera completata ({self.turtle_name}).")
             # Ferma il movimento
@@ -133,23 +133,28 @@ segments_U = [
     {"type": "rotate", "duration": 10, "linear_speed": 0.0, "angular_speed": -math.radians(90)},
     {"type": "move",   "duration": 30, "linear_speed": 1.0, "angular_speed": 0.0},
     {"type": "rotate", "duration": 10, "linear_speed": 0.0, "angular_speed": math.radians(90)},
-    {"type": "move",   "duration": 30, "linear_speed": 1.0, "angular_speed": 0.0},
+    {"type": "move",   "duration": 15, "linear_speed": 1.0, "angular_speed": 0.0},
     {"type": "rotate", "duration": 10, "linear_speed": 0.0, "angular_speed": math.radians(90)},
-    {"type": "move",   "duration": 30, "linear_speed": 1.0, "angular_speed": 0.0},
+    {"type": "move",   "duration": 20, "linear_speed": 1.0, "angular_speed": 0.0},
 ]
 
 # Lettera S:
-# Due movimenti curvi: prima verso destra, poi verso sinistra
+# Per ottenere una "S" più verosimile, la tartaruga viene spawnata con orientamento -90° (cioè verticalmente verso il basso).
+# La "S" viene disegnata in 4 segmenti:
+#   1) Breve tratto rettilineo superiore.
+#   2) Arco con curvatura negativa (-0.5) per far "incurvare" la parte superiore verso sinistra.
+#   3) Arco con curvatura positiva (+0.5) che ripristina l'orientamento verticale, curvando la parte inferiore verso destra.
+#   4) Breve tratto rettilineo inferiore.
 segments_S = [
-    {"type": "move", "duration": 20, "linear_speed": 1.0, "angular_speed": -0.5},
-    {"type": "move", "duration": 20, "linear_speed": 1.0, "angular_speed": 0.5},
+    {"type": "move", "duration": 20, "linear_speed": 1.0, "angular_speed": 1.5708}, # semi cerchio antiorario verso basso
+    {"type": "move", "duration": 20, "linear_speed": 1.0, "angular_speed": -1.5708}, # semi cerchio orario
 ]
 
 # Lettera I:
 # Ruota verso il basso e disegna una linea verticale (3 unità)
 segments_I = [
     {"type": "rotate", "duration": 10, "linear_speed": 0.0, "angular_speed": -math.radians(90)},
-    {"type": "move",   "duration": 30, "linear_speed": 1.0, "angular_speed": 0.0},
+    {"type": "move",   "duration": 20, "linear_speed": 1.0, "angular_speed": 0.0},
 ]
 
 
@@ -167,31 +172,32 @@ def main(args=None):
     letter_positions = {
         'U': (2.0, 5.5),
         'S': (6.0, 5.5),
-        'I': (10.0, 5.5),
+        'I': (8.0, 5.5),
     }
 
-    # Elenco delle lettere e dei relativi segmenti
+    # Ogni tupla contiene: nome tartaruga, segmenti, posizione e orientamento iniziale (theta in radianti)
     letters = [
-        ('TURTLE_U', segments_U, letter_positions['U']),
-        ('TURTLE_S', segments_S, letter_positions['S']),
-        ('TURTLE_I', segments_I, letter_positions['I']),
+        ('TURTLE_U', segments_U, letter_positions['U'], 0.0),
+        ('TURTLE_S', segments_S, letter_positions['S'], math.radians(180)),
+        ('TURTLE_I', segments_I, letter_positions['I'], 0.0),
     ]
 
-    for turtle_name, segments, (x, y) in letters:
-        # Spawn della tartaruga per la lettera corrente
-        spawn_turtle(main_node, turtle_name, x, y, theta=0.0)
+    for turtle_info in letters:
+        turtle_name, segments, (x, y), theta = turtle_info
+
+        # Spawn della tartaruga con l'orientamento specificato
+        spawn_turtle(main_node, turtle_name, x, y, theta=theta)
         # Creiamo il Drawer per disegnare la lettera
         drawer = Drawer(turtle_name, segments)
         main_node.get_logger().info(f"Inizio disegno della lettera con '{turtle_name}'.")
-        # Usiamo un ciclo per attendere che il Drawer termini il disegno
+        # Ciclo di spin finché il disegno non è completato
         while rclpy.ok() and not drawer.done:
             rclpy.spin_once(drawer, timeout_sec=0.1)
-        # Distruggiamo il nodo Drawer, lasciando la tartaruga visibile
         drawer.destroy_node()
-        # Piccola pausa prima di passare alla lettera successiva
+        # Breve pausa prima della lettera successiva
         time.sleep(0.5)
 
-    main_node.get_logger().info("Disegno 'USI' completato (tartarughe multiple rimaste a schermo).")
+    main_node.get_logger().info("Disegno 'USI' completato (le tartarughe rimangono a schermo).")
     main_node.destroy_node()
     rclpy.shutdown()
 
