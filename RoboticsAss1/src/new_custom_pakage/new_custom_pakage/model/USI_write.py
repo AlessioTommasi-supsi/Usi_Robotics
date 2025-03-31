@@ -1,7 +1,6 @@
-
 class USI_write:
     """
-    Il model USI_write associa le posizioni in cui spawnare le tartarughe alle rispettive lettere.
+    Il model USI_write associa le posizioni (coordinate) alle lettere da disegnare.
     """
     def __init__(self):
         self.positions = {

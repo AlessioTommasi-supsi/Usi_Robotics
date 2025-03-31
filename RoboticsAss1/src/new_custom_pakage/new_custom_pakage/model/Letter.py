@@ -9,7 +9,7 @@ import math
 class Letter:
     """
     La classe Letter contiene la definizione dei segmenti per ciascuna lettera.
-    I segmenti sono definiti come un dizionario statico (attributo di classe).
+    I segmenti sono definiti in un dizionario statico.
     """
     LETTERS = {
         'U': [
@@ -22,11 +22,11 @@ class Letter:
         ],
         'S': [
             {"type": "move", "duration": 20, "linear_speed": 1.0, "angular_speed": 1.5708},
-            {"type": "move", "duration": 25, "linear_speed": 1.0, "angular_speed": -1.5708},
+            {"type": "move", "duration": 20, "linear_speed": 1.0, "angular_speed": -1.5708},
         ],
         'I': [
             {"type": "rotate", "duration": 10, "linear_speed": 0.0, "angular_speed": -math.radians(90)},
-            {"type": "move",   "duration": 25, "linear_speed": 1.0, "angular_speed": 0.0},
+            {"type": "move",   "duration": 20, "linear_speed": 1.0, "angular_speed": 0.0},
         ]
     }
 

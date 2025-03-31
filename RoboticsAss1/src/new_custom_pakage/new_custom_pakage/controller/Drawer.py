@@ -11,35 +11,31 @@ from turtlesim.msg import Pose
 
 class Drawer(Node):
     """
-    Il Drawer legge i segmenti della lettera (passata come parametro) e invia
-    i comandi a Turtlesim per disegnarla.
+    Il Drawer legge i segmenti della lettera e invia i comandi a Turtlesim per disegnarla.
     """
     def __init__(self, turtle_name: str, letter):
         super().__init__(f'drawer_{turtle_name.lower()}')
         self.turtle_name = turtle_name
         self.letter = letter
 
-        # Publisher per i messaggi di movimento (Twist)
         self.vel_publisher = self.create_publisher(Twist, f'/{self.turtle_name}/cmd_vel', 10)
-        # Subscriber per monitorare la posa della tartaruga (debug)
         self.pose_subscriber = self.create_subscription(Pose, f'/{self.turtle_name}/pose', self.pose_callback, 10)
 
-        # Timer per inviare comandi ogni 0.1 s
+        # Timer con tick di 0.1 sec
         self.timer = self.create_timer(0.1, self.timer_callback)
-
         self.segments = self.letter.segments
         self.current_segment_index = 0
         self.segment_tick_count = 0
         self.done = False
 
     def pose_callback(self, msg: Pose):
-        self.get_logger().debug(f"[{self.turtle_name}] Posizione: x={msg.x:.2f}, y={msg.y:.2f}, theta={msg.theta:.2f}")
+        self.get_logger().debug(f"[{self.turtle_name}] x={msg.x:.2f}, y={msg.y:.2f}, theta={msg.theta:.2f}")
 
     def timer_callback(self):
         if self.current_segment_index >= len(self.segments):
             self.get_logger().info(f"Lettera '{self.letter.name}' completata per {self.turtle_name}.")
-            msg_stop = Twist()
-            self.vel_publisher.publish(msg_stop)
+            stop_msg = Twist()
+            self.vel_publisher.publish(stop_msg)
             self.timer.cancel()
             self.done = True
             return

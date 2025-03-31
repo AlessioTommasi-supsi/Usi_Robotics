@@ -9,8 +9,7 @@ from turtlesim.srv import Spawn, Kill
 
 class TurtleSpawner(Node):
     """
-    TurtleSpawner si occupa di spawnare e, se necessario, rimuovere le tartarughe in Turtlesim.
-    Utilizza i servizi ROS /spawn e /kill.
+    TurtleSpawner si occupa di spawnare e rimuovere le tartarughe in Turtlesim utilizzando i servizi /spawn e /kill.
     """
     def __init__(self):
         super().__init__('turtle_spawner')
