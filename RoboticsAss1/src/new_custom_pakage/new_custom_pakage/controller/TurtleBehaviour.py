@@ -7,6 +7,8 @@ from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from turtlesim.msg import Pose
 
+from new_custom_pakage.controller.move2goal_node import Move2GoalNode
+
 class TurtleBehaviour(Node):
     """
     Controller per la tartaruga che esegue due modalità:
@@ -43,15 +45,15 @@ class TurtleBehaviour(Node):
         self.cmd_pub = self.create_publisher(Twist, f'/{self.turtle.name}/cmd_vel', 10)
 
     def my_pose_callback(self, msg: Pose):
-        """Callback per aggiornare la nostra posizione. NON FUNZIONAA"""
-        self.get_logger().info(f"Posizione tartaruga: x={msg.x:.2f}, y={msg.y:.2f}, theta={msg.theta:.2f}")
+        """Callback per aggiornare la nostra posizione. """
+        #self.get_logger().info(f"Posizione tartaruga: x={msg.x:.2f}, y={msg.y:.2f}, theta={msg.theta:.2f}")
         self._my_pose = msg
         self._my_pose.x = round(self._my_pose.x, 4)
         self._my_pose.y = round(self._my_pose.y, 4)
 
     def target_pose_callback(self, msg: Pose):
-        """Callback per aggiornare la posizione del bersaglio (turtle1). NON FUNZIONAA"""
-        self.get_logger().info(f"Posizione bersaglio: x={msg.x:.2f}, y={msg.y:.2f}, theta={msg.theta:.2f}")
+        """Callback per aggiornare la posizione del bersaglio (turtle1). """
+        #self.get_logger().info(f"Posizione bersaglio: x={msg.x:.2f}, y={msg.y:.2f}, theta={msg.theta:.2f}")
         self._target_pose = msg
         self._target_pose.x = round(self._target_pose.x, 4)
         self._target_pose.y = round(self._target_pose.y, 4)
@@ -83,44 +85,25 @@ class TurtleBehaviour(Node):
             self.get_logger().info(f"Disegno completato per la lettera '{self.letter.name}'.")
 
     def chase(self):
-        """
-        Insegue il bersaglio (turtle1) usando un controllo proporzionale ispirato al nodo move2goal.
-        """
-        self.get_logger().info("Avvio comportamento 'chase'.")
+        self.get_logger().info(f"Inizio inseguimento del bersaglio (turtle1) da parte di '{self.turtle.name}'.")
+        self.get_logger().info(f"Posizione bersaglio: x={self._target_pose.x:.2f}, y={self._target_pose.y:.2f}, theta={self._target_pose.theta:.2f}")
+        self.get_logger().info(f"Posizione tartaruga: x={self._my_pose.x:.2f}, y={self._my_pose.y:.2f}, theta={self._my_pose.theta:.2f}")
 
-        while rclpy.ok():
-            if self._my_pose is None or self._target_pose is None:
-                rclpy.spin_once(self, timeout_sec=0.1)
-                continue
+        # Crea l'istanza del controller move2goal per il nodo della tartaruga inseguitrice.
+        self.chaseController = Move2GoalNode(self._target_pose, 0.1, self.turtle.name)
+        done = self.chaseController.start_moving()
 
-            # Calcola la distanza dalla tartaruga bersaglio
-            dx = self._target_pose.x - self._my_pose.x
-            dy = self._target_pose.y - self._my_pose.y
-            distance = math.sqrt(dx * dx + dy * dy)
+        oldPose = self._target_pose
 
-            # Se il bersaglio è raggiunto, ferma la tartaruga
-            if distance < 0.5:
-                self.get_logger().info("Bersaglio raggiunto!")
-                cmd_vel = Twist()
-                cmd_vel.linear.x = 0.0
-                cmd_vel.angular.z = 0.0
-                self.cmd_pub.publish(cmd_vel)
-                break
+        # In questo ciclo, aggiorniamo il goal del controller e spinamo il nodo chaseController
+        while rclpy.ok() and self._state == "chasing":
+            self.chaseController.goal_pose = self._target_pose  # Aggiorna continuamente il goal
+            if (self._target_pose.x != oldPose.x or self._target_pose.y != oldPose.y):
+                self.get_logger().info(f"Aggiornamento bersaglio: x={self._target_pose.x:.2f}, y={self._target_pose.y:.2f}, theta={self._target_pose.theta:.2f}")
+                oldPose = self._target_pose
+            # Spin sul nodo chaseController per far scattare i suoi timer e callback
+            rclpy.spin_once(self.chaseController, timeout_sec=0.1)
 
-            # Calcola l'angolo verso il bersaglio
-            goal_angle = math.atan2(dy, dx)
-            angular_error = goal_angle - self._my_pose.theta
-
-            # Normalizza l'errore angolare in [-pi, pi]
-            while angular_error > math.pi:
-                angular_error -= 2 * math.pi
-            while angular_error < -math.pi:
-                angular_error += 2 * math.pi
-
-            # Controllo proporzionale (guadagni ispirati a move2goal)
-            cmd_vel = Twist()
-            cmd_vel.linear.x = 1.5 * distance
-            cmd_vel.angular.z = 6.0 * angular_error
-            self.cmd_pub.publish(cmd_vel)
-
-            time.sleep(0.1)
+        # Aspetta il completamento del movimento
+        rclpy.spin_until_future_complete(self.chaseController, done)
+        self.get_logger().info("Inseguimento completato.")
