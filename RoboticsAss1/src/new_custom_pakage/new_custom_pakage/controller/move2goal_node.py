@@ -94,7 +94,7 @@ class Move2GoalNode(Node):
             self.vel_publisher.publish(cmd_vel)
             
             # Mark the future as completed, which will shutdown the node
-            self.done_future.set_result(True)
+            #self.done_future.set_result(True)
 
     def euclidean_distance(self, goal_pose, current_pose):
         """Euclidean distance between current pose and the goal."""

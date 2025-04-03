@@ -29,7 +29,7 @@ class TurtleBehaviour(Node):
         # Stato iniziale: "writing"
         self._state = "writing"
         # Soglia per passare in "chasing" (in metri)
-        self._k2 = 200.0
+        self._k2 = 2.0
 
         # Pose della tartaruga inseguitrice e del bersaglio (turtle1)
         self._my_pose = None
@@ -65,12 +65,12 @@ class TurtleBehaviour(Node):
         si passa alla modalità 'chasing'.
         """
         self.get_logger().info(f"Avvio disegno della lettera '{self.letter.name}' in modalità '{self._state}'.")
-        while rclpy.ok() and self._state == "writing":
+        while rclpy.ok() and self._state == "writing" and not drawer.done:
+            rclpy.spin_once(drawer, timeout_sec=0.1)
             rclpy.spin_once(self, timeout_sec=0.1)
             # Se le pose sono disponibili, controlla la distanza
             #Prendo le pose corrente della tartaruga e del bersaglio
-            self.get_logger().info("Controllo distanza...")
-            #self.get_logger().info(f"Posizione corrente: x={self._my_pose.x:.2f}, y={self._my_pose.y:.2f}, theta={self._my_pose.theta:.2f}")
+           #self.get_logger().info(f"Posizione corrente: x={self._my_pose.x:.2f}, y={self._my_pose.y:.2f}, theta={self._my_pose.theta:.2f}")
             if self._my_pose is not None and self._target_pose is not None:
                 dx = self._target_pose.x - self._my_pose.x
                 dy = self._target_pose.y - self._my_pose.y
