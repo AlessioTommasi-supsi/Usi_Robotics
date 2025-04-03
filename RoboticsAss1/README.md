@@ -1,4 +1,4 @@
-# COmendi utili
+# Comandi utili
 
 cd /home/none/Usi_Robotics/RoboticsAss1/
 
@@ -50,3 +50,28 @@ come segue:
 
 Bulizia file build: 
 rm -rf build/ install/ log/
+
+
+# Spiegazione struttura progetto:
+
+## New Custom Package
+
+Questo pacchetto ROS 2 implementa un controllo personalizzato per il simulatore **Turtlesim**. Il sistema gestisce il comportamento di una tartaruga in due modalità operative:
+- **Writing**: la tartaruga disegna una lettera seguendo le istruzioni definite nel modulo **Drawer**.
+- **Chasing**: se il bersaglio (tipicamente `turtle1`) si avvicina troppo, il sistema interrompe il disegno e inizia a inseguirlo utilizzando il modulo **Turtle Behaviour** in combinazione con **Move2GoalNode**.
+
+## Descrizione dei Componenti
+
+### Turtle (Modello)
+Il modulo `Turtle.py` definisce il modello di una tartaruga. Questo include le proprietà base, come il nome della tartaruga, e eventuali metodi utili per gestire lo stato della tartaruga nel simulatore. Utilizza funzioni helper per integrare il modello con la logica di controllo dei nodi.
+
+### Drawer (Disegnatore)
+I moduli `Drawer.py` e `USI_drawer.py` contengono la logica per disegnare le lettere.  
+- **Drawer**: definisce le basi per l'esecuzione di sequenze di movimenti per riprodurre un tracciato, come ad esempio i contorni di una lettera.
+- **USI_drawer**: è un'implementazione specifica (ad esempio per la lettera "U") che sfrutta la logica del Drawer per controllare i movimenti della tartaruga e ottenere il disegno desiderato.
+
+### Turtle Behaviour (Comportamento della Tartaruga)
+Il modulo `TurtleBehaviour.py` gestisce il comportamento dinamico della tartaruga. In particolare:
+- **Modalità Writing**: Il nodo si sottoscrive ai topic della propria posizione e a quello del bersaglio (ad esempio `turtle1`), ed esegue un loop in cui controlla continuamente la distanza tra le due tartarughe. Finché la distanza supera una certa soglia, il nodo esegue il disegno della lettera.
+- **Modalità Chasing**: Se la distanza scende al di sotto di una soglia predefinita, il nodo interrompe il disegno e passa alla modalità "chasing", chiamando il modulo `Move2GoalNode` per inseguire il target.
+
