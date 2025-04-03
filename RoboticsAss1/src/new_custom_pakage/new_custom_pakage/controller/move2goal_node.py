@@ -72,29 +72,26 @@ class Move2GoalNode(Node):
             # Wait until we receive the current pose of the turtle for the first time
             return
         
-        if self.euclidean_distance(self.goal_pose, self.current_pose) >= self.tolerance:
-            # We still haven't reached the goal pose. Use a proportional controller to compute velocities
-            # that will move the turtle towards the goal (https://en.wikipedia.org/wiki/Proportional_control)
+        # Calcola la distanza corrente dal goal
+        distance = self.euclidean_distance(self.goal_pose, self.current_pose)
         
-            # Twist represents 3D linear and angular velocities, in turtlesim we only care about 2 dimensions:
-            # linear velocity along the x-axis (forward) and angular velocity along the z-axis (yaw angle)
+        # Se la tartaruga non è sufficientemente vicina al goal, calcola e invia i comandi
+        if distance >= self.tolerance:
             cmd_vel = Twist() 
             cmd_vel.linear.x = self.linear_vel(self.goal_pose, self.current_pose)
             cmd_vel.angular.z = self.angular_vel(self.goal_pose, self.current_pose)
-            
-            # Publish the command
             self.vel_publisher.publish(cmd_vel)
         else:
-            self.get_logger().info("Goal reached, shutting down...")
-            
-            # Stop the turtle
+            # Se la distanza è inferiore alla tolleranza, la tartaruga è "vicina" al goal.
+            # Invece di bloccare il nodo, inviamo comunque un comando di stop...
             cmd_vel = Twist() 
             cmd_vel.linear.x = 0.0
             cmd_vel.angular.z = 0.0
             self.vel_publisher.publish(cmd_vel)
-            
-            # Mark the future as completed, which will shutdown the node
-            #self.done_future.set_result(True)
+            # ... ma non segniamo la fine del Future, in modo da poter aggiornare il goal dinamicamente.
+            # Se necessario, puoi anche commentare la riga seguente:
+            # self.done_future.set_result(True)
+
 
     def euclidean_distance(self, goal_pose, current_pose):
         """Euclidean distance between current pose and the goal."""
