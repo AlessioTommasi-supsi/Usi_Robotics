@@ -33,7 +33,7 @@ class Drawer(Node):
 
     def timer_callback(self):
         if self.current_segment_index >= len(self.segments):
-            self.get_logger().info(f"Lettera '{self.letter.name}' completata per {self.turtle_name}.")
+            self.get_logger().info(f"asd Lettera '{self.letter.name}' completata per {self.turtle_name}.")
             stop_msg = Twist()
             self.vel_publisher.publish(stop_msg)
             self.timer.cancel()

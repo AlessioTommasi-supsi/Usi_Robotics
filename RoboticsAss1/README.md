@@ -5,6 +5,7 @@ cd /home/none/Usi_Robotics/RoboticsAss1/
 ros2 run turtlesim turtlesim_node
 ros2 run turtlesim turtle_teleop_key
 
+rm -rf build install log
 colcon build --symlink-install
 
 source install/setup.bash
