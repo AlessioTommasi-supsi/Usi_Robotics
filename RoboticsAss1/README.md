@@ -3,9 +3,11 @@
 cd /home/none/Usi_Robotics/RoboticsAss1/
 
 ros2 run turtlesim turtlesim_node
+
 ros2 run turtlesim turtle_teleop_key
 
 rm -rf build install log
+
 colcon build --symlink-install
 
 source install/setup.bash
@@ -75,3 +77,27 @@ Il modulo `TurtleBehaviour.py` gestisce il comportamento dinamico della tartarug
 - **Modalità Writing**: Il nodo si sottoscrive ai topic della propria posizione e a quello del bersaglio (ad esempio `turtle1`), ed esegue un loop in cui controlla continuamente la distanza tra le due tartarughe. Finché la distanza supera una certa soglia, il nodo esegue il disegno della lettera.
 - **Modalità Chasing**: Se la distanza scende al di sotto di una soglia predefinita, il nodo interrompe il disegno e passa alla modalità "chasing", chiamando il modulo `Move2GoalNode` per inseguire il target.
 
+
+
+POSIZIONI TARTARUGA: 
+
+U
+X Y
+1 7
+1 3
+3 3
+3 7
+
+S
+X Y
+6 7
+4 7
+4 5
+6 5
+6 3
+4 3
+
+I
+X Y
+8 7
+8 3
