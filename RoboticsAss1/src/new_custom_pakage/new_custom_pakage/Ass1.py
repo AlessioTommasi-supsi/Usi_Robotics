@@ -24,10 +24,13 @@ def main(args=None):
     
     set_of_point_to_draw = USI_write().point
 
-    USI_turtle = Turtle("USI_turtle", position=(0.0, 0.0))
+    
     spawner.spawn_turtle("USI_turtle", 0.0, 0.0, 0.0)
     spawner.get_logger().info("Tartaruga USI_turtle spawnata.")
 
+    USI_turtle = Turtle("USI_turtle", position=(0.0, 0.0))
+    USI_turtle.spawner = spawner  # Assegna lo spawner alla tartaruga
+    
     USI_turtle.behaviour = TurtleBehaviour(USI_turtle)
 
     USI_turtle.behaviour.draw(set_of_point_to_draw)

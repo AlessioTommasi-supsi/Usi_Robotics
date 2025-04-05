@@ -63,37 +63,31 @@ class TurtleBehaviour(Node):
 
     
     def draw(self, set_of_point_to_draw):
-        """
-          TODO:
-
-        """
-        """
-        Esegue il ciclo di disegno (modalità 'writing'). Se durante il disegno
-        la distanza dalla tartaruga bersaglio (turtle1) diventa inferiore a k2,
-        si passa alla modalità 'chasing'.
-        """
-        self.get_logger().info(f"Avvio disegno")
-
+        self.get_logger().info("Avvio disegno")
         # Crea un'istanza del controller di inseguimento
         self.chaseController = Move2GoalNode(self._target_pose, 0.1, self.turtle.name)
         
-        while rclpy.ok() and self._state == "writing":
-
-            for letter, points in set_of_point_to_draw.items():
-                print(f" Lettera: {letter}")
-                for point in points:
-                    print(f"   Punto: {point}")
-                    
-                    write_target_pose = Pose()
-                    write_target_pose.x = float(point[0])
-                    write_target_pose.y = float(point[1])
-                    self.chaseController.goal_pose = write_target_pose
-                    done =self.chaseController.start_moving()
-                    
-                    rclpy.spin_until_future_complete(self.chaseController, done)
+        for letter, points in set_of_point_to_draw.items():
+            self.get_logger().info(f"Lettera: {letter}")
+            self.turtle.set_pen(self, off=1)  # Disattiva la penna
+            for point in points:
+                self.get_logger().info(f"Punto: {point}")
+                write_target_pose = Pose()
+                write_target_pose.x = float(point[0])
+                write_target_pose.y = float(point[1])
+                
+                # Imposta il nuovo goal
+                self.chaseController.goal_pose = write_target_pose
+                
+                # Avvia il controller per questo punto
+                done = self.chaseController.start_moving()
+                
+                # Aspetta finché il punto non viene raggiunto
+                while rclpy.ok():
+                    rclpy.spin_once(self.chaseController, timeout_sec=0.1)
                     rclpy.spin_once(self, timeout_sec=0.1)
-            
 
+                    # Se durante il disegno viene attivata la modalità 'chasing', interrompi il disegno
                     if self._my_pose is not None and self._target_pose is not None:
                         dx = self._target_pose.x - self._my_pose.x
                         dy = self._target_pose.y - self._my_pose.y
@@ -103,18 +97,32 @@ class TurtleBehaviour(Node):
                             self._state = "chasing"
                             self.chase()
                             return
+                        
+                    # Calcola la distanza dalla posizione corrente al punto target
+                    if self._my_pose is not None:
+                        dx = write_target_pose.x - self._my_pose.x
+                        dy = write_target_pose.y - self._my_pose.y
+                        dist_to_point = math.sqrt(dx * dx + dy * dy)
+                        if dist_to_point < 0.1:  # toleranza per considerare il punto raggiunto
+                            self.get_logger().info("   Punto raggiunto")
+                            break
+                
+                # Una volta raggiunto il punto, puoi inserire una breve pausa per vedere il movimento
+                time.sleep(1)
+                self.turtle.set_pen(self, off=0)  # Attiva la penna
+                
+                
 
-                    #metto del tempo per vedere il movimento della tartaruga
-                    time.sleep(1)  # Tempo di attesa per vedere il movimento della tartaruga in secondi
-            #self._state = "END_writing"
-            # ho completato il disegno della scritta
-            self.get_logger().info(f"Disegno completato '")
+        self.get_logger().info("Disegno completato.")
+
+
 
     def chase(self):
         self.get_logger().info(f"Inizio inseguimento del bersaglio (turtle1) da parte di '{self.turtle.name}'.")
         self.get_logger().info(f"Posizione iniziale bersaglio: x={self._target_pose.x:.2f}, y={self._target_pose.y:.2f}, theta={self._target_pose.theta:.2f}")
         self.get_logger().info(f"Posizione iniziale tartaruga: x={self._my_pose.x:.2f}, y={self._my_pose.y:.2f}, theta={self._my_pose.theta:.2f}")
-
+        self.turtle.set_pen(self, off=1)  # Disattiva la penna
+        
         # Crea un'istanza del controller di inseguimento
         self.chaseController = Move2GoalNode(self._target_pose, 0.1, self.turtle.name)
         

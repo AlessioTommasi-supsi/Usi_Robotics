@@ -1,3 +1,6 @@
+from turtlesim.srv import SetPen
+import rclpy
+
 class Turtle:
     """
     Il modello Turtle contiene le informazioni relative a una tartaruga:
@@ -26,3 +29,29 @@ class Turtle:
         if self.behaviour:
             self.behaviour.get_logger().info(f"Destroying behaviour node for turtle {self.name}")
             self.behaviour.destroy_node()
+
+
+    def set_pen(self, node, r=0, g=0, b=0, width=3, off=0):
+        """
+        Controlla la penna della tartaruga tramite il servizio /<turtle_name>/set_pen.
+        
+        :param node: il nodo (es. lo spawner o il behaviour) che viene utilizzato per chiamare il servizio.
+        :param r: rosso (0-255)
+        :param g: verde (0-255)
+        :param b: blu (0-255)
+        :param width: larghezza della penna.
+        :param off: 0 per pen down (disegna), 1 per pen up (non disegna).
+        """
+        client = node.create_client(SetPen, f'/{self.name}/set_pen')
+        if not client.wait_for_service(timeout_sec=2.0):
+            node.get_logger().error("Servizio set_pen non disponibile!")
+            return
+        req = SetPen.Request()
+        req.r = r
+        req.g = g
+        req.b = b
+        req.width = width
+        req.off = off
+        future = client.call_async(req)
+        rclpy.spin_until_future_complete(node, future)
+        node.get_logger().info(f"Pen {'disattivata' if off else 'attivata'} per {self.name}")
