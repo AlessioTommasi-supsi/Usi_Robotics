@@ -21,7 +21,6 @@ class KeyboardController:
             "   d -> Ruota a destra\n"
             "   q -> Esci\n"
         )
-        print(message)
         self.node.get_logger().info(message)
     
     def update_offender_selection(self):
