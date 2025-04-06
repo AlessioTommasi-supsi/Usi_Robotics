@@ -154,8 +154,8 @@ class TurtleBehaviour(Node):
                         self._state = "chasing"
                         self.chase()
                         self.get_logger().info("fine inseguimento")
+                        self.go_to(target_pose, isPenOff) #riprendo scrittura da dove ho interrotto
                         break
-                        
                 
             # Calcola la distanza dalla posizione corrente al punto target
             if self._my_pose is not None:
@@ -206,11 +206,3 @@ class TurtleBehaviour(Node):
 
 
         self.get_logger().info("Inseguimento terminato.")
-
-        """
-        from geometry_msgs.msg import Twist
-        stop_cmd = Twist()
-        stop_cmd.linear.x = 0.0
-        stop_cmd.angular.z = 0.0
-        self.cmd_pub.publish(stop_cmd)
-        """
