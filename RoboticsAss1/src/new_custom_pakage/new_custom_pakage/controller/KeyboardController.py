@@ -1,6 +1,6 @@
 import sys
 from geometry_msgs.msg import Twist  # Necessario per inviare i comandi di movimento
-
+from new_custom_pakage.model.Turtle import Turtle
 class KeyboardController:
     """Classe per gestire l'input da tastiera e muovere le tartarughe offender."""
     
@@ -117,9 +117,13 @@ class KeyboardController:
         
         if cmd == 'n':
             turtle_name = f"offender_{len(self.node.offender)+1}"
-            self.node.spawn_turtle(turtle_name, 1.0, 1.0, 0.0)
+            self.node.spawn_turtle(turtle_name, 1.0, 1.0, 0.0) #sara uno spawner il nodo!
             # Dopo lo spawn, seleziona automaticamente il nuovo offender
             self.selected_offender = turtle_name
+
+            tmp_turtle = Turtle(turtle_name, position=(1.0, 1.0))
+            tmp_turtle.set_pen(self.node, r=255, g=0, b=0, width=3, off=1)  # Penna disattivata
+
         elif cmd == 'k':
             self.kill_selected_offender()
         elif cmd == 'o':

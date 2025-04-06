@@ -26,7 +26,7 @@ class TurtleSpawner(Node):
         qos_profile.durability = DurabilityPolicy.TRANSIENT_LOCAL
         self.offender_publisher = self.create_publisher(String, 'offenders_topic', qos_profile)
         
-        # Lista delle tartarughe spawnate
+        # Lista delle tartarughe spawnate sono stringhe che rappresentano il nome delle tartarughe! non oggetti di tipo tourtle per semplicita!
         self.offender = []
 
         self.get_logger().info("TurtleSpawner avviato. Premi 'n' per spawnare, 'k' per killare, 'q' per uscire.")
