@@ -40,7 +40,7 @@ class TurtleBehaviour(Node):
         self.create_subscription(String, 'offenders_topic', self.offenders_callback, qos_profile)
         
         # Lista dei nomi di offender già registrati, e archivio delle sottoscrizioni dinamiche
-        self.register_offender = []
+        
         self.offender_subs = {}
         
         # Publisher per comandare i movimenti della tartaruga inseguitrice
@@ -63,9 +63,9 @@ class TurtleBehaviour(Node):
         
         # Controlla ogni elemento della lista: per i nuovi offender crea la sottoscrizione
         for offender_name in offenders_received:
-            if offender_name not in self.register_offender:
+            if offender_name not in self.turtle.spawner.offender:
                 self.get_logger().info(f"Nuovo offender rilevato: '{offender_name}'. Creazione sottoscrizione per /{offender_name}/pose")
-                self.register_offender.append(offender_name)
+                self.turtle.spawner.offender.append(offender_name)
                 # Crea la sottoscrizione per ricevere la pose del nuovo offender
                 sub = self.create_subscription(
                     Pose,
@@ -116,7 +116,7 @@ class TurtleBehaviour(Node):
                 write_target_pose.y = float(point[1])
                 
                 self.go_to(write_target_pose, isPenOff=penOffState)  # Muovi la tartaruga verso il punto
-                
+                self.get_logger().info(f"end of go_to: {point} ")
                 # Una volta raggiunto il punto, puoi inserire una breve pausa per vedere il movimento
                 time.sleep(1)
                 penOffState = 0  # Attiva la penna per disegnare
@@ -139,18 +139,23 @@ class TurtleBehaviour(Node):
             rclpy.spin_once(self, timeout_sec=0.1)
 
             # Se durante il disegno viene attivata la modalità 'chasing', interrompi il disegno
-            if self._my_pose is not None and self._target_pose is not None:
-                dx = self._target_pose.x - self._my_pose.x
-                dy = self._target_pose.y - self._my_pose.y
-                distance = math.sqrt(dx * dx + dy * dy)
-                if distance < self._k2:
-                    self.get_logger().info("Interruzione disegno: attivata modalità 'chasing'.")
-                    self._state = "chasing"
-                    self.onStopWritingPose = Pose()
-                    self.onStopWritingPose.x = self._my_pose.x
-                    self.onStopWritingPose.y = self._my_pose.y
-                    self.chase()
-                    
+            if self._my_pose is not None:
+                if self._target_pose is not None:
+                    dx = self._target_pose.x - self._my_pose.x
+                    dy = self._target_pose.y - self._my_pose.y
+                    distance = math.sqrt(dx * dx + dy * dy)
+                    if distance < self._k2:
+                        if self._state == "writing":
+                            self.onStopWritingPose = Pose()
+                            self.onStopWritingPose.x = self._my_pose.x
+                            self.onStopWritingPose.y = self._my_pose.y
+                        self.get_logger().info("Interruzione disegno: attivata modalità 'chasing'.")
+                        self.last_writing_pose = self._my_pose
+                        self._state = "chasing"
+                        self.chase()
+                        self.get_logger().info("fine inseguimento")
+                        break
+                        
                 
             # Calcola la distanza dalla posizione corrente al punto target
             if self._my_pose is not None:
@@ -184,12 +189,28 @@ class TurtleBehaviour(Node):
             rclpy.spin_once(self.chaseController, timeout_sec=0.1)
             rclpy.spin_once(self, timeout_sec=0.1)
 
-            # (Opzionale) Puoi inserire qui una logica per uscire dal chasing, ad esempio se il bersaglio si ferma per un certo tempo.
+            # logica per uscire dal chasing
+            # Calcola la distanza dalla posizione corrente al punto target
+            if self._my_pose is not None and self._target_pose is not None:
+                dx = self._target_pose.x - self._my_pose.x
+                dy = self._target_pose.y - self._my_pose.y
+                dist_to_point = math.sqrt(dx * dx + dy * dy)
+                if dist_to_point < 0.1:  # toleranza per considerare il punto raggiunto
+                    self.get_logger().info("   Tartaruga raggiunta ritorno a scrittura")
+                    self.turtle.spawner.kill_turtle("turtle1")  # kill the turtle that i have chased
+                    self._target_pose = None  # reset target pose
+                    self.go_to(self.onStopWritingPose, isPenOff=1)  # Muovi la tartaruga verso il punto
+                    self._state = "writing"
+                    break
+
+
 
         self.get_logger().info("Inseguimento terminato.")
-        # Ferma la tartaruga inviando un comando di stop
+
+        """
         from geometry_msgs.msg import Twist
         stop_cmd = Twist()
         stop_cmd.linear.x = 0.0
         stop_cmd.angular.z = 0.0
         self.cmd_pub.publish(stop_cmd)
+        """
