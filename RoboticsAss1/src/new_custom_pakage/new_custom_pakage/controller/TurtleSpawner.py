@@ -3,6 +3,8 @@ from rclpy.node import Node
 from turtlesim.srv import Spawn, Kill
 from std_msgs.msg import String
 from rclpy.qos import QoSProfile, DurabilityPolicy
+from new_custom_pakage.controller.KeyboardController import KeyboardController
+
 import sys
 import select
 import json
@@ -15,6 +17,9 @@ class TurtleSpawner(Node):
         # Client per il servizio spawn e kill di Turtlesim
         self.spawn_client = self.create_client(Spawn, 'spawn')
         self.kill_client  = self.create_client(Kill, 'kill')
+
+        # Inizializza il controller per la tastiera
+        self.keyboard_controller = KeyboardController(self)
         
         # Imposta un publisher con QoS transient_local per conservare l’ultimo messaggio
         qos_profile = QoSProfile(depth=10)
@@ -73,35 +78,23 @@ class TurtleSpawner(Node):
             self.get_logger().error(f"Errore nella kill della turtle '{name}'.")
 
 def main(args=None):
+    """Main loop per il nodo TurtleSpawner."""
     rclpy.init(args=args)
     node = TurtleSpawner()
 
     try:
         while rclpy.ok():
-            # Spin breve per gestire callback e servizi
             rclpy.spin_once(node, timeout_sec=0.1)
-            # Controllo non bloccante dell'input da tastiera
-            rlist, _, _ = select.select([sys.stdin], [], [], 0)
-            if rlist:
-                cmd = sys.stdin.read(1)
-                if cmd == 'n':
-                    turtle_name = f"offender_{len(node.offender) + 1}"
-                    node.spawn_turtle(turtle_name, 1.0, 1.0, 0.0)
-                elif cmd == 'k':
-                    if node.offender:
-                        # Per semplicità, kill dell'ultima tartaruga nell'elenco
-                        turtle_to_kill = node.offender[-1]
-                        node.kill_turtle(turtle_to_kill)
-                    else:
-                        node.get_logger().info("Nessuna tartaruga da killare.")
-                elif cmd == 'q':
-                    node.get_logger().info("Uscita richiesta. Chiusura del nodo.")
-                    break
+            if not node.keyboard_controller.listen_for_input():
+                break  # Esce dal loop se l'utente preme 'q'
     except KeyboardInterrupt:
         pass
 
     node.destroy_node()
     rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
 
 if __name__ == '__main__':
     main()
