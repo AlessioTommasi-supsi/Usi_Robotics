@@ -35,10 +35,10 @@ def main(args=None):
 
     USI_turtle.behaviour.draw(set_of_point_to_draw)
 
-    spawner.kill_turtle("USI_turtle")
-    USI_turtle.destroy()
+    #spawner.kill_turtle("USI_turtle")
+    #USI_turtle.destroy()
     spawner.get_logger().info("Disegno completato per tutte le lettere.")
-    spawner.destroy_node()
+    #spawner.destroy_node()
     
     # Chiude l'ecosistema di rclpy, liberando tutte le risorse.
     rclpy.shutdown()

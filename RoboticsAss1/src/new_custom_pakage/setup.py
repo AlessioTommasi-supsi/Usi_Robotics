@@ -20,7 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'ass1 = new_custom_pakage.Ass1:main'
+            'ass1 = new_custom_pakage.Ass1:main',
+            'spown = new_custom_pakage.controller.TurtleSpawner:main'
         ],
     },
 )
