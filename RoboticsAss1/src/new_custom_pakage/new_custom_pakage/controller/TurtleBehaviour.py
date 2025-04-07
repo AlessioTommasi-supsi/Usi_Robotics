@@ -49,8 +49,6 @@ class TurtleBehaviour(Node):
         
         self.offender_subs = {}
         
-        # Publisher per comandare i movimenti della tartaruga inseguitrice
-        #self.cmd_pub = self.create_publisher(Twist, f'/{self.turtle.name}/cmd_vel', 10)
         
         self.get_logger().info("TurtleBehaviour avviato, in attesa degli aggiornamenti degli offender.")
 
@@ -85,8 +83,7 @@ class TurtleBehaviour(Node):
                         10
                     )
                     
-                    #sub=self.create_subscription(Pose, f'/{offender_name}/pose', self.new_offender_position_callback, 10)
-        
+                    
                     
                     
                     self.offender_subs[offender_name] = sub
@@ -119,14 +116,6 @@ class TurtleBehaviour(Node):
         except Exception as e:
             self.get_logger().error(f"Errore nella callback dell'offender {offender_name}: {e}")
             return
-        
-    def new_offender_position_callback(self, msg: Pose):
-        """
-        Callback per aggiornare la posizione dell'offender.
-        Aggiorna continuamente il campo target_position dell'oggetto Offender corrispondente.
-        """
-        #self.get_logger().info(f"Posizione dell'offender: x={msg.x:.2f}, y={msg.y:.2f}, theta={msg.theta:.2f}")
-        
         
 
 
