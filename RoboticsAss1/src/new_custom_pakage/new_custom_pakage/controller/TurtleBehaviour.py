@@ -267,6 +267,19 @@ class TurtleBehaviour(Node):
         self.turtle1_pose_sub = self.create_subscription(Pose, '/turtle1/pose', self.target_pose_callback, 10)
         self._target_pose = Pose()
 
+        # Crea un publisher per i comandi di velocità a turtle1
+        self.turtle1_vel_pub = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)
+
+        # Crea il messaggio Twist con velocità random
+        vel_msg = Twist()
+        vel_msg.linear.x = random.uniform(1.0, 3.0)    # velocità lineare casuale
+        vel_msg.angular.z = random.uniform(-1.0, 1.0)    # velocità angolare casuale
+
+        self._target_velocity = vel_msg
+
+        # Pubblica il comando di velocità
+        self.turtle1_vel_pub.publish(vel_msg)
+
         self.get_logger().info("Inseguimento terminato.")
         self._state = "back to writing"
         self.go_to(self.onStopWritingPose, isPenOff=1)  # Muovi la tartaruga verso il punto
