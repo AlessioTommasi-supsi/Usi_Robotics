@@ -78,26 +78,12 @@ Il modulo `TurtleBehaviour.py` gestisce il comportamento dinamico della tartarug
 - **Modalità Chasing**: Se la distanza scende al di sotto di una soglia predefinita, il nodo interrompe il disegno e passa alla modalità "chasing", chiamando il modulo `Move2GoalNode` per inseguire il target.
 
 
+# Comandi da eseguire per testare il pacchetto:
+```bash
+ros2 run turtlesim turtlesim_node
+```
 
-POSIZIONI TARTARUGA: 
-
-U
-X Y
-1 7
-1 3
-3 3
-3 7
-
-S
-X Y
-6 7
-4 7
-4 5
-6 5
-6 3
-4 3
-
-I
-X Y
-8 7
-8 3
+apri un secondo terminale e lancia il nodo di teleoperazione:
+```bash
+ros2 run new_custom_pakage ass1
+```
