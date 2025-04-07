@@ -36,7 +36,8 @@ from turtlesim.msg import Pose
 class Move2GoalNode(Node):
     def __init__(self, goal_pose, tolerance, turtle_name='turtle1'):
         # Creates a node with name 'move2goal'
-        super().__init__('move2goal')
+        node_name = f"move2goal_{turtle_name}_goalPose_{str(goal_pose.x).replace('.', '_')}_{str(goal_pose.y).replace('.', '_')}"
+        super().__init__(node_name)
 
         # Create attributes to store the goal and current poses and tolerance
         self.goal_pose = goal_pose
@@ -58,7 +59,36 @@ class Move2GoalNode(Node):
         self.done_future = Future()
         
         return self.done_future
+
+    def stop_moving(self):
+        """Ferma la tartaruga e distrugge tutte le callback associate."""
+        try:
+            # Invia comando di stop (zero velocity)
+            cmd_vel = Twist() 
+            cmd_vel.linear.x = 0.0
+            cmd_vel.angular.z = 0.0
+            self.vel_publisher.publish(cmd_vel)
+        except Exception as e:
+            self.get_logger().warn("Impossibile pubblicare il comando di stop: " + str(e))
         
+        # Ferma il timer se esiste
+        if hasattr(self, 'timer'):
+            self.timer.cancel()
+            
+        try:
+            # Distruggi la sottoscrizione per non ricevere ulteriori callback
+            self.destroy_subscription(self.pose_subscriber)
+        except Exception as e:
+            self.get_logger().warn("Impossibile distruggere la subscription: " + str(e))
+            
+        try:
+            # Distruggi il publisher
+            self.destroy_publisher(self.vel_publisher)
+        except Exception as e:
+            self.get_logger().warn("Impossibile distruggere il publisher: " + str(e))
+        
+        self.get_logger().info("Stop_moving: timer e sottoscrizioni distrutti, tartaruga ferma.")
+
     def pose_callback(self, msg):
         """Callback called every time a new Pose message is received by the subscriber."""
         self.current_pose = msg

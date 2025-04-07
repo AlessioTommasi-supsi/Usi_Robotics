@@ -8,6 +8,9 @@ from std_msgs.msg import String
 from turtlesim.msg import Pose
 from geometry_msgs.msg import Twist
 from rclpy.qos import QoSProfile, DurabilityPolicy
+
+from new_custom_pakage.model.Offender import Offender
+
 import json
 
 from new_custom_pakage.controller.move2goal_node import Move2GoalNode
@@ -24,15 +27,18 @@ class TurtleBehaviour(Node):
         super().__init__(f'turtle_behaviour_{turtle.name.lower()}')
         self.turtle = turtle
 
+        self.chaseController = None  # Inizializza il controller di inseguimento a None
+
         # Stato iniziale e parametri
         self._state = "writing"
         self._k2 = 2.0  # Soglia per passare in "chasing"
         self._my_pose = None
         self._target_pose = None
+        self.offender_list = []
 
         # Sottoscrizioni fisse per la propria pose e quella del bersaglio (turtle1)
         self.create_subscription(Pose, f'/{self.turtle.name}/pose', self.my_pose_callback, 10)
-        self.create_subscription(Pose, '/turtle1/pose', self.target_pose_callback, 10)
+        self.turtle1_pose_sub = self.create_subscription(Pose, '/turtle1/pose', self.target_pose_callback, 10)
         
         # Sottoscrizione al topic degli offender (con QoS TRANSIENT_LOCAL)
         qos_profile = QoSProfile(depth=10)
@@ -44,43 +50,75 @@ class TurtleBehaviour(Node):
         self.offender_subs = {}
         
         # Publisher per comandare i movimenti della tartaruga inseguitrice
-        self.cmd_pub = self.create_publisher(Twist, f'/{self.turtle.name}/cmd_vel', 10)
+        #self.cmd_pub = self.create_publisher(Twist, f'/{self.turtle.name}/cmd_vel', 10)
         
         self.get_logger().info("TurtleBehaviour avviato, in attesa degli aggiornamenti degli offender.")
 
     def offenders_callback(self, msg):
         """
-        Callback per gli aggiornamenti della lista degli offender (in formato JSON).
-        Per ogni offender nuovo non ancora registrato, crea una sottoscrizione al topic /<nome_offender>/pose.
+        Callback per aggiornare la lista degli offender ricevuta (in formato JSON).
+        La lista ricevuta contiene i nomi degli offender.
+        Per ogni offender nuovo non presente in offender_list,
+        crea una sottoscrizione a '/<offender_name>/pose' e aggiungi un nuovo oggetto Offender.
         """
         try:
-            offenders_received = json.loads(msg.data)
+            offenders_received = json.loads(msg.data)  # presupponiamo una lista di nomi
+            self.get_logger().info("Lista degli offender ricevuta: " + str(offenders_received))
+            
+            for offender_name in offenders_received:
+                # Controlla se l'offender è già presente nella nostra lista
+                if not any(off.name == offender_name for off in self.offender_list) and offender_name != "":
+                    self.get_logger().info(f"Nuovo offender rilevato: '{offender_name}'. Creazione sottoscrizione per /{offender_name}/pose")
+                    
+                    # Crea e aggiungi l'oggetto Offender alla lista.
+                    new_offender = Offender(name=offender_name)
+                    self.offender_list.append(new_offender)
+                    
+                    # Crea la sottoscrizione per ricevere la pose dell'offender.
+                    # Utilizziamo lambda per passare offender_name al callback.
+                    
+                    """
+                    sub = self.create_subscription(
+                        Pose,
+                        f'/{offender_name}/pose',
+                        self.create_offender_callback(offender_name),
+                        10
+                    )
+                    """
+                    
+                    
+                    self.offender_subs[offender_name] = sub
         except Exception as e:
             self.get_logger().error(f"Errore nel decodificare il messaggio: {e}")
             return
+                
+    def create_offender_callback(self, offender_name):
+        def callback(msg: Pose):
+            self.new_offender_pose_callback(offender_name, msg)
+        return callback  
 
-        self.get_logger().info("Lista degli offender ricevuta: " + str(offenders_received))
-        
-        # Controlla ogni elemento della lista: per i nuovi offender crea la sottoscrizione
-        for offender_name in offenders_received:
-            if offender_name not in self.turtle.spawner.offender:
-                self.get_logger().info(f"Nuovo offender rilevato: '{offender_name}'. Creazione sottoscrizione per /{offender_name}/pose")
-                self.turtle.spawner.offender.append(offender_name)
-                # Crea la sottoscrizione per ricevere la pose del nuovo offender
-                sub = self.create_subscription(
-                    Pose,
-                    f'/{offender_name}/pose',
-                    self.new_offender_pose_callback, #diventera target_pose_callback
-                    10
-                )
-                self.offender_subs[offender_name] = sub  # Salva il riferimento per evitare il garbage collection
-
-    def new_offender_pose_callback(self, msg):
+    def new_offender_pose_callback(self, offender_name, msg: Pose):
         """
         Callback per gestire le pose dai nuovi offender.
-        Qui puoi aggiungere la logica per modificare il comportamento in base alle pose ricevute.
+        Aggiorna continuamente il campo target_position dell'oggetto Offender corrispondente.
         """
-        #self.get_logger().info("Ricevuta nuova pose da offender: " + str(msg))
+        
+        try:
+            # Cerca l'offender in offender_list usando il nome passato.
+            for offender in self.offender_list:
+                if offender.name == offender_name:
+                    offender.target_position = msg  # aggiorna sempre, non solo se è None
+                    """
+                    self.get_logger().info(
+                        f"Aggiornata target_position per offender {offender.name}: "
+                        f"x={msg.x:.2f}, y={msg.y:.2f}, theta={msg.theta:.2f}")
+                    """
+                    break
+        except Exception as e:
+            self.get_logger().error(f"Errore nella callback dell'offender {offender_name}: {e}")
+            return
+        
+
 
 
     def my_pose_callback(self, msg: Pose):
@@ -101,7 +139,6 @@ class TurtleBehaviour(Node):
     def draw(self, set_of_point_to_draw):
         self.get_logger().info("Avvio disegno")
         # Crea un'istanza del controller di inseguimento
-        self.chaseController = Move2GoalNode(self._target_pose, 0.01, self.turtle.name)
         
         
 
@@ -126,12 +163,23 @@ class TurtleBehaviour(Node):
         self.get_logger().info("Disegno completato.")
 
     def go_to(self, target_pose, isPenOff=1):
+        
+
         """Funzione per muovere la tartaruga verso un target specificato."""
         self.get_logger().info(f"Muovo la tartaruga verso: x={target_pose.x:.2f}, y={target_pose.y:.2f}, theta={target_pose.theta:.2f}")
         self.turtle.set_pen(self, off=isPenOff)
 
+        """
+        if self.chaseController is not None:
+            self.chaseController.stop_moving()
+            self.chaseController.destroy_node()
+            self.chaseController = None  # Reset del chaseController
+        """
+
         self.chaseController = Move2GoalNode(target_pose, 0.1, self.turtle.name)
+        self.chaseController.tolerance = 0.1
         self.chaseController.start_moving()
+
 
         # Aspetta finché il punto non viene raggiunto
         while rclpy.ok():
@@ -139,12 +187,12 @@ class TurtleBehaviour(Node):
             rclpy.spin_once(self, timeout_sec=0.1)
 
             # Se durante il disegno viene attivata la modalità 'chasing', interrompi il disegno
-            if self._my_pose is not None:
-                if self._target_pose is not None:
-                    dx = self._target_pose.x - self._my_pose.x
-                    dy = self._target_pose.y - self._my_pose.y
-                    distance = math.sqrt(dx * dx + dy * dy)
-                    if distance < self._k2:
+            if self._target_pose is not None: #dovra essere mofificata con un for per ogni offender
+                if self._my_pose is not None:
+                    euclidean_distance = self.chaseController.euclidean_distance(self._target_pose, self._my_pose)
+               
+                    if euclidean_distance < self._k2:  # Se la tartaruga bersaglio è vicina
+                        self.chaseController.tolerance = self._k2  # Aggiorna la tolleranza del self.chaseController
                         if self._state == "writing":
                             self.onStopWritingPose = Pose()
                             self.onStopWritingPose.x = self._my_pose.x
@@ -152,18 +200,22 @@ class TurtleBehaviour(Node):
                         self.get_logger().info("Interruzione disegno: attivata modalità 'chasing'.")
                         self.last_writing_pose = self._my_pose
                         self._state = "chasing"
+                        self.chaseController.stop_moving()
+                        self.chaseController.destroy_node()
                         self.chase()
                         self.get_logger().info("fine inseguimento")
+                        
                         self.go_to(target_pose, isPenOff) #riprendo scrittura da dove ho interrotto
-                        break
+                        return
                 
             # Calcola la distanza dalla posizione corrente al punto target
+            self.chaseController.tolerance = 0.1
             if self._my_pose is not None:
-                dx = target_pose.x - self._my_pose.x
-                dy = target_pose.y - self._my_pose.y
-                dist_to_point = math.sqrt(dx * dx + dy * dy)
-                if dist_to_point < 0.1:  # toleranza per considerare il punto raggiunto
+                euclidean_distance = self.chaseController.euclidean_distance(target_pose, self._my_pose)  
+                if euclidean_distance < self.chaseController.tolerance:
                     self.get_logger().info("   Punto raggiunto")
+                    self.chaseController.stop_moving()
+                    self.chaseController.destroy_node()
                     break
 
 
@@ -192,17 +244,21 @@ class TurtleBehaviour(Node):
             # logica per uscire dal chasing
             # Calcola la distanza dalla posizione corrente al punto target
             if self._my_pose is not None and self._target_pose is not None:
-                dx = self._target_pose.x - self._my_pose.x
-                dy = self._target_pose.y - self._my_pose.y
-                dist_to_point = math.sqrt(dx * dx + dy * dy)
-                if dist_to_point < 0.1:  # toleranza per considerare il punto raggiunto
+                euclidean_distance = self.chaseController.euclidean_distance(self._target_pose, self._my_pose)
+                
+                if euclidean_distance < self.chaseController.tolerance:  # toleranza per considerare il punto raggiunto
+                    self.chaseController.stop_moving()
+                    self.chaseController.destroy_node()
                     self.get_logger().info("   Tartaruga raggiunta ritorno a scrittura")
                     self.turtle.spawner.kill_turtle("turtle1")  # kill the turtle that i have chased
+                    self.destroy_subscription(self.turtle1_pose_sub)  # distruggi la sottoscrizione all'offender
                     self._target_pose = None  # reset target pose
-                    self.go_to(self.onStopWritingPose, isPenOff=1)  # Muovi la tartaruga verso il punto
-                    self._state = "writing"
                     break
 
-
+        
 
         self.get_logger().info("Inseguimento terminato.")
+        self._state = "writing"
+        self.go_to(self.onStopWritingPose, isPenOff=1)  # Muovi la tartaruga verso il punto
+        
+                    
