@@ -43,11 +43,18 @@ class TurtleBehaviour(Node):
         # Sottoscrizioni fisse per la propria pose e quella del bersaglio (turtle1)
         self.create_subscription(Pose, f'/{self.turtle.name}/pose', self.my_pose_callback, 10)
         self.turtle1_pose_sub = self.create_subscription(Pose, '/turtle1/pose', self.target_pose_callback, 10)
+        self.turtle1_vel_sub = self.create_subscription(
+            Twist,
+            '/turtle1/cmd_vel',
+            self.target_velocity_callback,
+            10
+        )
+       
         self._target_velocity = Twist()  # Inizializza la velocità del bersaglio a None
         self._target_velocity.linear.x = 0.0
         self._target_velocity.angular.z = 0.0
-        
-         
+
+
         # Sottoscrizione al topic degli offender (con QoS TRANSIENT_LOCAL)
         qos_profile = QoSProfile(depth=10)
         qos_profile.durability = DurabilityPolicy.TRANSIENT_LOCAL
@@ -90,10 +97,6 @@ class TurtleBehaviour(Node):
                         self.create_offender_callback(offender_name),
                         10
                     )
-                    
-                    
-                    
-                    
                     self.offender_subs[offender_name] = sub
         except Exception as e:
             self.get_logger().error(f"Errore nel decodificare il messaggio: {e}")
@@ -141,7 +144,10 @@ class TurtleBehaviour(Node):
         self._target_pose.x = round(self._target_pose.x, 4)
         self._target_pose.y = round(self._target_pose.y, 4)
 
-    
+    def target_velocity_callback(self, msg: Twist):
+        self._target_velocity = msg
+
+
     def draw(self, set_of_point_to_draw):
         self.get_logger().info("Avvio disegno")
         # Crea un'istanza del controller di inseguimento
@@ -236,7 +242,7 @@ class TurtleBehaviour(Node):
         # Avvia il timer del controller; in questo modo il goal può essere aggiornato dinamicamente
         self.chaseController.start_moving()
 
-        # Costante per il calcolo dell'intercetta
+        # Costante per il calcolo dell'intercetta CHIEDI se puo essere corretta!
         k_intercept = 0.1
 
         # Ciclo continuo per aggiornare il goal dinamicamente in base alla nuova posizione e velocità del bersaglio.
@@ -274,6 +280,7 @@ class TurtleBehaviour(Node):
                     self.get_logger().info("   Tartaruga raggiunta: ritorno a 'writing'.")
                     self.turtle.spawner.kill_turtle("turtle1")  # elimina il bersaglio inseguito
                     self.destroy_subscription(self.turtle1_pose_sub)  # distruggi la subscription al bersaglio
+                    self.destroy_subscription(self.turtle1_vel_sub)  # distruggi la subscription alla velocità del bersaglio
                     self._target_pose = None  # reset target pose
                     break
 
@@ -286,8 +293,7 @@ class TurtleBehaviour(Node):
         self.turtle.spawner.spawn_turtle("turtle1", posizione_random.x, posizione_random.y, posizione_random.theta)  # spawn turtle1 in una posizione random
         self.get_logger().info(f"Posizione bersaglio spawnato: x={posizione_random.x:.2f}, y={posizione_random.y:.2f}, theta={posizione_random.theta:.2f}")
         
-        # Ricrea la subscription per il bersaglio
-        self.turtle1_pose_sub = self.create_subscription(Pose, '/turtle1/pose', self.target_pose_callback, 10)
+        
         self._target_pose = Pose()
 
         # Crea un publisher per i comandi di velocità a turtle1
@@ -303,6 +309,15 @@ class TurtleBehaviour(Node):
         # Pubblica il comando di velocità
         self.turtle1_vel_pub.publish(vel_msg)
 
+        # Ricrea la subscription per il bersaglio
+        self.turtle1_pose_sub = self.create_subscription(Pose, '/turtle1/pose', self.target_pose_callback, 10)
+        self.turtle1_vel_sub = self.create_subscription(
+            Twist,
+            '/turtle1/cmd_vel',
+            self.target_velocity_callback,
+            10
+        )
+        
         self.get_logger().info("Inseguimento terminato.")
         self._state = "back to writing"
         self.go_to(self.onStopWritingPose, isPenOff=1)  # Muove la tartaruga verso il punto di ripresa
