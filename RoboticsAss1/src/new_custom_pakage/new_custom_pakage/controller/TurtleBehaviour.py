@@ -2,6 +2,8 @@ import math
 import time
 import sys
 
+import random
+
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
@@ -10,6 +12,7 @@ from geometry_msgs.msg import Twist
 from rclpy.qos import QoSProfile, DurabilityPolicy
 
 from new_custom_pakage.model.Offender import Offender
+
 
 import json
 
@@ -32,6 +35,7 @@ class TurtleBehaviour(Node):
         # Stato iniziale e parametri
         self._state = "writing"
         self._k2 = 2.0  # Soglia per passare in "chasing"
+        self._k1 = 0.5  # Soglia per eliminare l'offender
         self._my_pose = None
         self._target_pose = None
         self.offender_list = []
@@ -175,7 +179,6 @@ class TurtleBehaviour(Node):
         """
 
         self.chaseController = Move2GoalNode(target, 0.1, self.turtle.name)
-        self.chaseController.tolerance = 0.1
         self.chaseController.start_moving()
 
 
@@ -190,7 +193,6 @@ class TurtleBehaviour(Node):
                     euclidean_distance = self.chaseController.euclidean_distance(self._target_pose, self._my_pose)
                
                     if euclidean_distance < self._k2:  # Se la tartaruga bersaglio è vicina
-                        self.chaseController.tolerance = self._k2  # Aggiorna la tolleranza del self.chaseController
                         if self._state == "writing":
                             self.onStopWritingPose = Pose()
                             self.onStopWritingPose.x = self._my_pose.x
@@ -226,6 +228,7 @@ class TurtleBehaviour(Node):
 
         # Crea un'istanza del controller di inseguimento
         self.chaseController = Move2GoalNode(self._target_pose, 0.1, self.turtle.name)
+        self.chaseController.tolerance = self._k1  # Soglia per considerare il bersaglio raggiunto
         
         # Avvia il timer del controller; qui non usiamo il Future per bloccare il nodo, così da aggiornare dinamicamente il goal.
         self.chaseController.start_moving()
@@ -253,7 +256,16 @@ class TurtleBehaviour(Node):
                     self._target_pose = None  # reset target pose
                     break
 
-        
+        #Creo di nuovo il target  turtle1  in una posizione casuale
+        posizione_random = Pose()
+        posizione_random.x = random.uniform(1.0, 10.0)
+        posizione_random.y = random.uniform(1.0, 10.0)
+        posizione_random.theta = random.uniform(-math.pi, math.pi)
+
+        self.turtle.spawner.spawn_turtle("turtle1", posizione_random.x, posizione_random.y, posizione_random.theta)  # spawn turtle1 in a random position
+        self.get_logger().info(f"Posizione bersaglio spawnato: x={posizione_random.x:.2f}, y={posizione_random.y:.2f}, theta={posizione_random.theta:.2f}")
+        self.turtle1_pose_sub = self.create_subscription(Pose, '/turtle1/pose', self.target_pose_callback, 10)
+        self._target_pose = Pose()
 
         self.get_logger().info("Inseguimento terminato.")
         self._state = "back to writing"
