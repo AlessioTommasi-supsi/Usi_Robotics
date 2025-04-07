@@ -67,24 +67,26 @@ class TurtleBehaviour(Node):
             
             for offender_name in offenders_received:
                 # Controlla se l'offender è già presente nella nostra lista
-                if not any(off.name == offender_name for off in self.offender_list) and offender_name != "":
+                if not any(off.name == offender_name for off in self.offender_list) and offender_name != "" and offender_name != "turtle1" and offender_name != self.turtle.name:
                     self.get_logger().info(f"Nuovo offender rilevato: '{offender_name}'. Creazione sottoscrizione per /{offender_name}/pose")
                     
                     # Crea e aggiungi l'oggetto Offender alla lista.
                     new_offender = Offender(name=offender_name)
                     self.offender_list.append(new_offender)
                     
-                    # Crea la sottoscrizione per ricevere la pose dell'offender.
+                    #NON FUNZIONA!! se la decommento si rompe se non ce spowner attivo Crea la sottoscrizione per ricevere la pose dell'offender.
                     # Utilizziamo lambda per passare offender_name al callback.
                     
-                    """
+                    
                     sub = self.create_subscription(
                         Pose,
                         f'/{offender_name}/pose',
                         self.create_offender_callback(offender_name),
                         10
                     )
-                    """
+                    
+                    #sub=self.create_subscription(Pose, f'/{offender_name}/pose', self.new_offender_position_callback, 10)
+        
                     
                     
                     self.offender_subs[offender_name] = sub
@@ -108,17 +110,24 @@ class TurtleBehaviour(Node):
             for offender in self.offender_list:
                 if offender.name == offender_name:
                     offender.target_position = msg  # aggiorna sempre, non solo se è None
-                    """
+                    
                     self.get_logger().info(
                         f"Aggiornata target_position per offender {offender.name}: "
                         f"x={msg.x:.2f}, y={msg.y:.2f}, theta={msg.theta:.2f}")
-                    """
+                    
                     break
         except Exception as e:
             self.get_logger().error(f"Errore nella callback dell'offender {offender_name}: {e}")
             return
         
-
+    def new_offender_position_callback(self, msg: Pose):
+        """
+        Callback per aggiornare la posizione dell'offender.
+        Aggiorna continuamente il campo target_position dell'oggetto Offender corrispondente.
+        """
+        #self.get_logger().info(f"Posizione dell'offender: x={msg.x:.2f}, y={msg.y:.2f}, theta={msg.theta:.2f}")
+        
+        
 
 
     def my_pose_callback(self, msg: Pose):
@@ -162,11 +171,11 @@ class TurtleBehaviour(Node):
 
         self.get_logger().info("Disegno completato.")
 
-    def go_to(self, target_pose, isPenOff=1):
+    def go_to(self, target, isPenOff=1):
         
 
         """Funzione per muovere la tartaruga verso un target specificato."""
-        self.get_logger().info(f"Muovo la tartaruga verso: x={target_pose.x:.2f}, y={target_pose.y:.2f}, theta={target_pose.theta:.2f}")
+        self.get_logger().info(f"Muovo la tartaruga verso: x={target.x:.2f}, y={target.y:.2f}, theta={target.theta:.2f}")
         self.turtle.set_pen(self, off=isPenOff)
 
         """
@@ -176,7 +185,7 @@ class TurtleBehaviour(Node):
             self.chaseController = None  # Reset del chaseController
         """
 
-        self.chaseController = Move2GoalNode(target_pose, 0.1, self.turtle.name)
+        self.chaseController = Move2GoalNode(target, 0.1, self.turtle.name)
         self.chaseController.tolerance = 0.1
         self.chaseController.start_moving()
 
@@ -197,21 +206,21 @@ class TurtleBehaviour(Node):
                             self.onStopWritingPose = Pose()
                             self.onStopWritingPose.x = self._my_pose.x
                             self.onStopWritingPose.y = self._my_pose.y
-                        self.get_logger().info("Interruzione disegno: attivata modalità 'chasing'.")
+                        self.get_logger().info("Interruzione: attivata modalità 'chasing'.")
                         self.last_writing_pose = self._my_pose
                         self._state = "chasing"
                         self.chaseController.stop_moving()
                         self.chaseController.destroy_node()
                         self.chase()
-                        self.get_logger().info("fine inseguimento")
+                        self.get_logger().info("sono tornato a scrivere dal punto un cui ho interrotto")
                         
-                        self.go_to(target_pose, isPenOff) #riprendo scrittura da dove ho interrotto
+                        self.go_to(target, isPenOff) #riprendo scrittura da dove ho interrotto
                         return
                 
             # Calcola la distanza dalla posizione corrente al punto target
             self.chaseController.tolerance = 0.1
             if self._my_pose is not None:
-                euclidean_distance = self.chaseController.euclidean_distance(target_pose, self._my_pose)  
+                euclidean_distance = self.chaseController.euclidean_distance(target, self._my_pose)  
                 if euclidean_distance < self.chaseController.tolerance:
                     self.get_logger().info("   Punto raggiunto")
                     self.chaseController.stop_moving()
@@ -258,7 +267,8 @@ class TurtleBehaviour(Node):
         
 
         self.get_logger().info("Inseguimento terminato.")
-        self._state = "writing"
+        self._state = "back to writing"
         self.go_to(self.onStopWritingPose, isPenOff=1)  # Muovi la tartaruga verso il punto
+        self._state = "writing"
         
                     
