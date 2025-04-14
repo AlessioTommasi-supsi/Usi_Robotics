@@ -1,0 +1,9 @@
+rock_manifest = {
+   ["dkjson-2.7-1.rockspec"] = "889cbe348571e4c50185c5150b71a1ae",
+   doc = {
+      ["readme.txt"] = "05e1b292f1351726df88eb5c7c5569c3"
+   },
+   lua = {
+      ["dkjson.lua"] = "94320e64e95f9bb5b06d9955e5391a78"
+   }
+}
