@@ -1,0 +1,1791 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN"><html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-us">
+<title>simRobomaster Plugin API reference</title>
+<link rel="stylesheet" type="text/css" href="../style.css">
+<script type="text/javascript">
+//
+function getParameterByName(name, url = window.location.href)
+{
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if(!results) return null;
+    if(!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+//
+                </script><style type="text/css">
+td.section { margin: 0; padding: 0; }
+                </style>
+</head>
+<body>
+<div align="center"><table class="allEncompassingTable">
+<tr><td id="title" class="section"><h1>simRobomaster Plugin API reference</h1></td></tr>
+<tr><td id="info" class="section"></td></tr>
+<tr><td id="alphabetical" class="section"><pre class="lightGreyBox"><a href="?#configure_vision">simRobomaster.configure_vision</a>
+<a href="?#create">simRobomaster.create</a>
+<a href="?#create_ep">simRobomaster.create_ep</a>
+<a href="?#create_s1">simRobomaster.create_s1</a>
+<a href="?#disable_distance_sensor">simRobomaster.disable_distance_sensor</a>
+<a href="?#enable_camera">simRobomaster.enable_camera</a>
+<a href="?#enable_distance_sensor">simRobomaster.enable_distance_sensor</a>
+<a href="?#enable_gimbal">simRobomaster.enable_gimbal</a>
+<a href="?#enable_servo">simRobomaster.enable_servo</a>
+<a href="?#enable_vision">simRobomaster.enable_vision</a>
+<a href="?#get_action_state">simRobomaster.get_action_state</a>
+<a href="?#get_arm_position">simRobomaster.get_arm_position</a>
+<a href="?#get_attitude">simRobomaster.get_attitude</a>
+<a href="?#get_detected_people">simRobomaster.get_detected_people</a>
+<a href="?#get_detected_robots">simRobomaster.get_detected_robots</a>
+<a href="?#get_distance_reading">simRobomaster.get_distance_reading</a>
+<a href="?#get_gimbal_angles">simRobomaster.get_gimbal_angles</a>
+<a href="?#get_gripper">simRobomaster.get_gripper</a>
+<a href="?#get_handles">simRobomaster.get_handles</a>
+<a href="?#get_imu">simRobomaster.get_imu</a>
+<a href="?#get_odometry">simRobomaster.get_odometry</a>
+<a href="?#get_servo_angle">simRobomaster.get_servo_angle</a>
+<a href="?#get_twist">simRobomaster.get_twist</a>
+<a href="?#get_wheel_speeds">simRobomaster.get_wheel_speeds</a>
+<a href="?#move_arm">simRobomaster.move_arm</a>
+<a href="?#move_gimbal">simRobomaster.move_gimbal</a>
+<a href="?#move_servo">simRobomaster.move_servo</a>
+<a href="?#move_to">simRobomaster.move_to</a>
+<a href="?#set_blaster_led">simRobomaster.set_blaster_led</a>
+<a href="?#set_gimbal_target_speeds">simRobomaster.set_gimbal_target_speeds</a>
+<a href="?#set_gripper_target">simRobomaster.set_gripper_target</a>
+<a href="?#set_led_effect">simRobomaster.set_led_effect</a>
+<a href="?#set_log_level">simRobomaster.set_log_level</a>
+<a href="?#set_mode">simRobomaster.set_mode</a>
+<a href="?#set_servo_mode">simRobomaster.set_servo_mode</a>
+<a href="?#set_servo_target_speed">simRobomaster.set_servo_target_speed</a>
+<a href="?#set_target_twist">simRobomaster.set_target_twist</a>
+<a href="?#set_target_wheel_speeds">simRobomaster.set_target_wheel_speeds</a>
+<a href="?#set_vision_class">simRobomaster.set_vision_class</a>
+</pre></td></tr>
+<tr><td id="commands" class="section">
+<h3 class="subsectionBar">
+<a name="configure_vision" id="configure_vision"></a>simRobomaster.configure_vision</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Set the vision tolerance, i.e., how much of the object has to be visible to be detected.</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">simRobomaster.configure_vision(int handle, float min_width=0.5, float min_height=0.5, float tolerance=0.0)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>min_width</strong> (float, default: 0.5): Minimal visible horizontal portion of the object to be detectable</div>
+<div>
+<strong>min_height</strong> (float, default: 0.5): Minimal visible vertical portion of the object to be detectable</div>
+<div>
+<strong>tolerance</strong> (float, default: 0.0): Tolerance for the object to be detectable (between 0 and 1)</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">simRobomaster.configure_vision(int handle, float min_width=0.5, float min_height=0.5, float tolerance=0.0)<br>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="create" id="create"></a>simRobomaster.create</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Instantiate a RoboMaster controller</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">int handle = simRobomaster.create(int handle, string remote_api_network="", string serial_number="", bool camera_use_udp=false, int camera_bitrate=1000000, bool enable_camera=true, bool enable_gripper=true, bool enable_arm=true, bool enable_gimbal=true, bool enable_vision=true)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The handle of the CoppeliaSim robot.</div>
+<div>
+<strong>remote_api_network</strong> (string, default: ""): The address that the remote API should use `"&lt;ip&gt;/&lt;subnet size in bits&gt;"`. E.g., use `"127.0.0.1/24"` for local network, `"/0"` to bind to any network interface. Leave empty to disable the remote API.</div>
+<div>
+<strong>serial_number</strong> (string, default: ""): The robot serial number</div>
+<div>
+<strong>camera_use_udp</strong> (bool, default: false): Make the camera use UDP for streaming</div>
+<div>
+<strong>camera_bitrate</strong> (int, default: 1000000): The target bitrate for the camera stream</div>
+<div>
+<strong>enable_camera</strong> (bool, default: true): Enable the camera module</div>
+<div>
+<strong>enable_gripper</strong> (bool, default: true): Enable the camera module</div>
+<div>
+<strong>enable_arm</strong> (bool, default: true): Enable the robotic arm module</div>
+<div>
+<strong>enable_gimbal</strong> (bool, default: true): Enable the gimbal module</div>
+<div>
+<strong>enable_vision</strong> (bool, default: true): Enable the vision module</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"><div>
+<strong>handle</strong> (int): An handle that identifies the RoboMaster controller</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">int handle = simRobomaster.create(int handle, string remote_api_network="", string serial_number="", bool camera_use_udp=false, int camera_bitrate=1000000, bool enable_camera=true, bool enable_gripper=true, bool enable_arm=true, bool enable_gimbal=true, bool enable_vision=true)<br>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="create_ep" id="create_ep"></a>simRobomaster.create_ep</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Instantiate a RoboMaster controller with the default configuration for EP:
+          `enable_camera=true`, `camera_use_udp=false`, `camera_bitrate=1000000`, `enable_arm=true`, `enable_gripper=true`, `enable_gimbal=false`
+        </td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">int handle = simRobomaster.create_ep(int handle, string remote_api_network="", string serial_number="")<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The handle of the CoppeliaSim robot.</div>
+<div>
+<strong>remote_api_network</strong> (string, default: ""): The address that the remote API should use `"&lt;ip&gt;/&lt;subnet size in bits&gt;"`. E.g., use `"127.0.0.1/24"` for local network, `"/0"` to bind to any network interface. Leave empty to disable the remote API.</div>
+<div>
+<strong>serial_number</strong> (string, default: ""): The robot serial number</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"><div>
+<strong>handle</strong> (int): An handle that identifies the RoboMaster controller</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">int handle = simRobomaster.create_ep(int handle, string remote_api_network="", string serial_number="")<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    See also
+                                                </td>
+<td class="apiTableRightDescr"> <a href="#enable_servo">simRobomaster.enable_servo</a> <a href="#get_arm_position">simRobomaster.get_arm_position</a> <a href="#get_gripper">simRobomaster.get_gripper</a> <a href="#get_servo_angle">simRobomaster.get_servo_angle</a> <a href="#move_arm">simRobomaster.move_arm</a> <a href="#move_servo">simRobomaster.move_servo</a> <a href="#set_gripper_target">simRobomaster.set_gripper_target</a> <a href="#set_servo_mode">simRobomaster.set_servo_mode</a> <a href="#set_servo_target_speed">simRobomaster.set_servo_target_speed</a>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="create_s1" id="create_s1"></a>simRobomaster.create_s1</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Instantiate a RoboMaster controller with the default configuration for S1:
+        `enable_camera=true`, `camera_use_udp=false`, `camera_bitrate=1000000`, `enable_arm=false`, `enable_gripper=false`, `enable_gimbal=true`
+      </td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">int handle = simRobomaster.create_s1(int handle, string remote_api_network="", string serial_number="")<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The handle of the CoppeliaSim robot.</div>
+<div>
+<strong>remote_api_network</strong> (string, default: ""): The address that the remote API should use `"&lt;ip&gt;/&lt;subnet size in bits&gt;"`. E.g., use `"127.0.0.1/24"` for local network, `"/0"` to bind to any network interface. Leave empty to disable the remote API.</div>
+<div>
+<strong>serial_number</strong> (string, default: ""): The robot serial number</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"><div>
+<strong>handle</strong> (int): An handle that identifies the RoboMaster controller</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">int handle = simRobomaster.create_s1(int handle, string remote_api_network="", string serial_number="")<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    See also
+                                                </td>
+<td class="apiTableRightDescr"> <a href="#enable_gimbal">simRobomaster.enable_gimbal</a> <a href="#get_gimbal_angles">simRobomaster.get_gimbal_angles</a> <a href="#move_gimbal">simRobomaster.move_gimbal</a> <a href="#set_blaster_led">simRobomaster.set_blaster_led</a> <a href="#set_gimbal_target_speeds">simRobomaster.set_gimbal_target_speeds</a> <a href="#set_mode">simRobomaster.set_mode</a>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="disable_distance_sensor" id="disable_distance_sensor"></a>simRobomaster.disable_distance_sensor</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Attach a distance sensor</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">simRobomaster.disable_distance_sensor(int handle, int port)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>port</strong> (int): The port (from 0 to 3) of the sensor</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">simRobomaster.disable_distance_sensor(int handle, int port)<br>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="enable_camera" id="enable_camera"></a>simRobomaster.enable_camera</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Set the camera module state</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">simRobomaster.enable_camera(int handle, bool enabled, string resolution="720p")<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>enabled</strong> (bool): The camera state</div>
+<div>
+<strong>resolution</strong> (string, default: "720p"): The camera vertical resolution, one of `"480p"`, `"540p"`, and `"720p"`</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">simRobomaster.enable_camera(int handle, bool enabled, string resolution="720p")<br>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="enable_distance_sensor" id="enable_distance_sensor"></a>simRobomaster.enable_distance_sensor</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Attach a distance sensor</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">simRobomaster.enable_distance_sensor(int handle, int port, int sensor_handle)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>port</strong> (int): The port (from 0 to 3) of the sensor</div>
+<div>
+<strong>sensor_handle</strong> (int): The handle of the sensor object</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">simRobomaster.enable_distance_sensor(int handle, int port, int sensor_handle)<br>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="enable_gimbal" id="enable_gimbal"></a>simRobomaster.enable_gimbal</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Set the gimbal state</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">simRobomaster.enable_gimbal(int handle, bool value)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>value</strong> (bool): Set to true to enable the gimbal motors, set to false to disable them</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">simRobomaster.enable_gimbal(int handle, bool value)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    See also
+                                                </td>
+<td class="apiTableRightDescr"> <a href="#create_s1">simRobomaster.create_s1</a> <a href="#get_gimbal_angles">simRobomaster.get_gimbal_angles</a> <a href="#move_gimbal">simRobomaster.move_gimbal</a> <a href="#set_blaster_led">simRobomaster.set_blaster_led</a> <a href="#set_gimbal_target_speeds">simRobomaster.set_gimbal_target_speeds</a> <a href="#set_mode">simRobomaster.set_mode</a>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="enable_servo" id="enable_servo"></a>simRobomaster.enable_servo</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Set the state of one of the servo motors</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">simRobomaster.enable_servo(int handle, int servo, bool value)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>servo</strong> (int): The index of the servo (0, 1, 2)</div>
+<div>
+<strong>value</strong> (bool): Set to true to enable motor control or to false to disable it</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">simRobomaster.enable_servo(int handle, int servo, bool value)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    See also
+                                                </td>
+<td class="apiTableRightDescr"> <a href="#create_ep">simRobomaster.create_ep</a> <a href="#get_arm_position">simRobomaster.get_arm_position</a> <a href="#get_gripper">simRobomaster.get_gripper</a> <a href="#get_servo_angle">simRobomaster.get_servo_angle</a> <a href="#move_arm">simRobomaster.move_arm</a> <a href="#move_servo">simRobomaster.move_servo</a> <a href="#set_gripper_target">simRobomaster.set_gripper_target</a> <a href="#set_servo_mode">simRobomaster.set_servo_mode</a> <a href="#set_servo_target_speed">simRobomaster.set_servo_target_speed</a>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="enable_vision" id="enable_vision"></a>simRobomaster.enable_vision</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Enable/disable vision. It replicates the SDK API.</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">simRobomaster.enable_vision(int handle, int mask)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>mask</strong> (int): A bit mask: set to 0 to disable vision, to 2 to detect people, or to 128 to detect robots</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">simRobomaster.enable_vision(int handle, int mask)<br>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="get_action_state" id="get_action_state"></a>simRobomaster.get_action_state</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">string status = simRobomaster.get_action_state(int handle, int action)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>action</strong> (int): The action handle</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"><div>
+<strong>status</strong> (string): The status of the action, one of `"failed"`, `"rejected"`, `"running"`, `"undefined"`, `"started"`</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">string status = simRobomaster.get_action_state(int handle, int action)<br>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="get_arm_position" id="get_arm_position"></a>simRobomaster.get_arm_position</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Get the robotic arm end effector current position estimation</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">CS_Vector3 position = simRobomaster.get_arm_position(int handle)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam"><div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"><div>
+<strong>position</strong> (CS_Vector3): The current position</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">CS_Vector3 position = simRobomaster.get_arm_position(int handle)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    See also
+                                                </td>
+<td class="apiTableRightDescr"> <a href="#create_ep">simRobomaster.create_ep</a> <a href="#enable_servo">simRobomaster.enable_servo</a> <a href="#get_gripper">simRobomaster.get_gripper</a> <a href="#get_servo_angle">simRobomaster.get_servo_angle</a> <a href="#move_arm">simRobomaster.move_arm</a> <a href="#move_servo">simRobomaster.move_servo</a> <a href="#set_gripper_target">simRobomaster.set_gripper_target</a> <a href="#set_servo_mode">simRobomaster.set_servo_mode</a> <a href="#set_servo_target_speed">simRobomaster.set_servo_target_speed</a>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="get_attitude" id="get_attitude"></a>simRobomaster.get_attitude</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Get the current attitude estimation</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">CS_Attitude attitude = simRobomaster.get_attitude(int handle)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam"><div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"><div>
+<strong>attitude</strong> (CS_Attitude): The current attitude</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">CS_Attitude attitude = simRobomaster.get_attitude(int handle)<br>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="get_detected_people" id="get_detected_people"></a>simRobomaster.get_detected_people</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Get the last detection</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">CS_BoundingBox[] bounding_boxes = simRobomaster.get_detected_people(int handle)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam"><div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"><div>
+<strong>bounding_boxes</strong> (table of CS_BoundingBox): A list with bounding boxes and handles of the currently detected robots.</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">list bounding_boxes = simRobomaster.get_detected_people(int handle)<br>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="get_detected_robots" id="get_detected_robots"></a>simRobomaster.get_detected_robots</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Get the last detection</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">CS_BoundingBox[] bounding_boxes = simRobomaster.get_detected_robots(int handle)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam"><div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"><div>
+<strong>bounding_boxes</strong> (table of CS_BoundingBox): A list with bounding boxes and handles of the currently detected robots.</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">list bounding_boxes = simRobomaster.get_detected_robots(int handle)<br>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="get_distance_reading" id="get_distance_reading"></a>simRobomaster.get_distance_reading</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Get the chassis current twist estimation (linear and angular velocity)</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">float distance = simRobomaster.get_distance_reading(int handle, int port)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>port</strong> (int): The port (from 0 to 3) of the sensor</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"><div>
+<strong>distance</strong> (float): The current reading (or 0.0 if the sensor is disabled)</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">float distance = simRobomaster.get_distance_reading(int handle, int port)<br>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="get_gimbal_angles" id="get_gimbal_angles"></a>simRobomaster.get_gimbal_angles</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Get the current gimbal state estimation</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">float yaw, float pitch = simRobomaster.get_gimbal_angles(int handle, string yaw_frame="chassis", string pitch_frame="fixed")<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>yaw_frame</strong> (string, default: "chassis"): The yaw frame, one of `"chassis"`, `"fixed"`, or `"gimbal"`</div>
+<div>
+<strong>pitch_frame</strong> (string, default: "fixed"): The pitch frame, one of `"fixed"` or `"gimbal"`</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet">
+<div>
+<strong>yaw</strong> (float): The current yaw [rad]</div>
+<div>
+<strong>pitch</strong> (float): The current pitch [rad]</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">float yaw, float pitch = simRobomaster.get_gimbal_angles(int handle, string yaw_frame="chassis", string pitch_frame="fixed")<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    See also
+                                                </td>
+<td class="apiTableRightDescr"> <a href="#create_s1">simRobomaster.create_s1</a> <a href="#enable_gimbal">simRobomaster.enable_gimbal</a> <a href="#move_gimbal">simRobomaster.move_gimbal</a> <a href="#set_blaster_led">simRobomaster.set_blaster_led</a> <a href="#set_gimbal_target_speeds">simRobomaster.set_gimbal_target_speeds</a> <a href="#set_mode">simRobomaster.set_mode</a>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="get_gripper" id="get_gripper"></a>simRobomaster.get_gripper</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Get the gripper current state</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">string state = simRobomaster.get_gripper(int handle)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam"><div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"><div>
+<strong>state</strong> (string): The current state, one of `"open"`, `"close"`, `"pause"`</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">string state = simRobomaster.get_gripper(int handle)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    See also
+                                                </td>
+<td class="apiTableRightDescr"> <a href="#create_ep">simRobomaster.create_ep</a> <a href="#enable_servo">simRobomaster.enable_servo</a> <a href="#get_arm_position">simRobomaster.get_arm_position</a> <a href="#get_servo_angle">simRobomaster.get_servo_angle</a> <a href="#move_arm">simRobomaster.move_arm</a> <a href="#move_servo">simRobomaster.move_servo</a> <a href="#set_gripper_target">simRobomaster.set_gripper_target</a> <a href="#set_servo_mode">simRobomaster.set_servo_mode</a> <a href="#set_servo_target_speed">simRobomaster.set_servo_target_speed</a>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="get_handles" id="get_handles"></a>simRobomaster.get_handles</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Get the handles of all active RoboMaster controllers</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">int[] handles = simRobomaster.get_handles()<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam"></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"><div>
+<strong>handles</strong> (table of int): The list of handles</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">list handles = simRobomaster.get_handles()<br>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="get_imu" id="get_imu"></a>simRobomaster.get_imu</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Get the current IMU estimation</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">CS_IMU imu = simRobomaster.get_imu(int handle)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam"><div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"><div>
+<strong>imu</strong> (CS_IMU): The current IMU</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">CS_IMU imu = simRobomaster.get_imu(int handle)<br>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="get_odometry" id="get_odometry"></a>simRobomaster.get_odometry</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Get the current odometry state estimation</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">CS_Odometry odometry = simRobomaster.get_odometry(int handle)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam"><div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"><div>
+<strong>odometry</strong> (CS_Odometry): The current odometry</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">CS_Odometry odometry = simRobomaster.get_odometry(int handle)<br>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="get_servo_angle" id="get_servo_angle"></a>simRobomaster.get_servo_angle</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Get the current servo angle estimation</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">float angle = simRobomaster.get_servo_angle(int handle, int servo)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>servo</strong> (int): The index of the servo (0, 1, 2)</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"><div>
+<strong>angle</strong> (float): The current servo angle [rad]</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">float angle = simRobomaster.get_servo_angle(int handle, int servo)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    See also
+                                                </td>
+<td class="apiTableRightDescr"> <a href="#create_ep">simRobomaster.create_ep</a> <a href="#enable_servo">simRobomaster.enable_servo</a> <a href="#get_arm_position">simRobomaster.get_arm_position</a> <a href="#get_gripper">simRobomaster.get_gripper</a> <a href="#move_arm">simRobomaster.move_arm</a> <a href="#move_servo">simRobomaster.move_servo</a> <a href="#set_gripper_target">simRobomaster.set_gripper_target</a> <a href="#set_servo_mode">simRobomaster.set_servo_mode</a> <a href="#set_servo_target_speed">simRobomaster.set_servo_target_speed</a>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="get_twist" id="get_twist"></a>simRobomaster.get_twist</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Get the chassis current twist estimation (linear and angular velocity)</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">CS_Twist2D twist = simRobomaster.get_twist(int handle)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam"><div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"><div>
+<strong>twist</strong> (CS_Twist2D): The current twist</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">CS_Twist2D twist = simRobomaster.get_twist(int handle)<br>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="get_wheel_speeds" id="get_wheel_speeds"></a>simRobomaster.get_wheel_speeds</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Get the current wheel speeds estimation</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">CS_WheelFloatValues speeds = simRobomaster.get_wheel_speeds(int handle)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam"><div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"><div>
+<strong>speeds</strong> (CS_WheelFloatValues): The current wheel speeds in m/s</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">CS_WheelFloatValues speeds = simRobomaster.get_wheel_speeds(int handle)<br>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="move_arm" id="move_arm"></a>simRobomaster.move_arm</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Make the robotic arm move the end effect to a target position</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">int handle = simRobomaster.move_arm(int handle, float x, float z, bool absolute)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>x</strong> (float): The x-coordination of the target position [m]</div>
+<div>
+<strong>z</strong> (float): The z-coordination of the target position [m]</div>
+<div>
+<strong>absolute</strong> (bool): Whenver to consider the position absolute with respect to the robot frame, or relative with respect to the current arm position</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"><div>
+<strong>handle</strong> (int): The handle of the action</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">int handle = simRobomaster.move_arm(int handle, float x, float z, bool absolute)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    See also
+                                                </td>
+<td class="apiTableRightDescr"> <a href="#create_ep">simRobomaster.create_ep</a> <a href="#enable_servo">simRobomaster.enable_servo</a> <a href="#get_arm_position">simRobomaster.get_arm_position</a> <a href="#get_gripper">simRobomaster.get_gripper</a> <a href="#get_servo_angle">simRobomaster.get_servo_angle</a> <a href="#move_servo">simRobomaster.move_servo</a> <a href="#set_gripper_target">simRobomaster.set_gripper_target</a> <a href="#set_servo_mode">simRobomaster.set_servo_mode</a> <a href="#set_servo_target_speed">simRobomaster.set_servo_target_speed</a>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="move_gimbal" id="move_gimbal"></a>simRobomaster.move_gimbal</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Make the gimbal move to a target attitude</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">int handle = simRobomaster.move_gimbal(int handle, float yaw, float pitch, float yaw_speed, float pitch_speed, string yaw_frame="chassis", string pitch_frame="fixed")<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>yaw</strong> (float): The target yaw [rad]</div>
+<div>
+<strong>pitch</strong> (float): The target pitch [rad]</div>
+<div>
+<strong>yaw_speed</strong> (float): The desired yaw speed [rad/s]</div>
+<div>
+<strong>pitch_speed</strong> (float): The desired pitch speed [rad/s]</div>
+<div>
+<strong>yaw_frame</strong> (string, default: "chassis"): The target yaw frame, one of `"chassis"`, `"fixed"`, or `"gimbal"`</div>
+<div>
+<strong>pitch_frame</strong> (string, default: "fixed"): The target pitch frame, one of `"fixed"` or `"gimbal"`</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"><div>
+<strong>handle</strong> (int): The action handle</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">int handle = simRobomaster.move_gimbal(int handle, float yaw, float pitch, float yaw_speed, float pitch_speed, string yaw_frame="chassis", string pitch_frame="fixed")<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    See also
+                                                </td>
+<td class="apiTableRightDescr"> <a href="#create_s1">simRobomaster.create_s1</a> <a href="#enable_gimbal">simRobomaster.enable_gimbal</a> <a href="#get_gimbal_angles">simRobomaster.get_gimbal_angles</a> <a href="#set_blaster_led">simRobomaster.set_blaster_led</a> <a href="#set_gimbal_target_speeds">simRobomaster.set_gimbal_target_speeds</a> <a href="#set_mode">simRobomaster.set_mode</a>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="move_servo" id="move_servo"></a>simRobomaster.move_servo</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Make the robot move one of the servo motors to a target angle</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">int handle = simRobomaster.move_servo(int handle, int servo, float angle)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>servo</strong> (int): The index of the servo (0, 1, 2)</div>
+<div>
+<strong>angle</strong> (float): The target angle [rad]</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"><div>
+<strong>handle</strong> (int): The handle of the action</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">int handle = simRobomaster.move_servo(int handle, int servo, float angle)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    See also
+                                                </td>
+<td class="apiTableRightDescr"> <a href="#create_ep">simRobomaster.create_ep</a> <a href="#enable_servo">simRobomaster.enable_servo</a> <a href="#get_arm_position">simRobomaster.get_arm_position</a> <a href="#get_gripper">simRobomaster.get_gripper</a> <a href="#get_servo_angle">simRobomaster.get_servo_angle</a> <a href="#move_arm">simRobomaster.move_arm</a> <a href="#set_gripper_target">simRobomaster.set_gripper_target</a> <a href="#set_servo_mode">simRobomaster.set_servo_mode</a> <a href="#set_servo_target_speed">simRobomaster.set_servo_target_speed</a>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="move_to" id="move_to"></a>simRobomaster.move_to</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Make the robot go to a target pose. This will create an possibly long running action.</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">int handle = simRobomaster.move_to(int handle, CS_Pose2D pose, float linear_speed=0.5, float angular_speed=1.0)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>pose</strong> (CS_Pose2D): The target pose</div>
+<div>
+<strong>linear_speed</strong> (float, default: 0.5): The desired linear speed</div>
+<div>
+<strong>angular_speed</strong> (float, default: 1.0): The angular linear speed</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"><div>
+<strong>handle</strong> (int): The action handle</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">int handle = simRobomaster.move_to(int handle, CS_Pose2D pose, float linear_speed=0.5, float angular_speed=1.0)<br>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="set_blaster_led" id="set_blaster_led"></a>simRobomaster.set_blaster_led</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Set the intensity of the blaster LED</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">simRobomaster.set_blaster_led(int handle, float intensity)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>intensity</strong> (float): The intensity between 0 (off) and 1</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">simRobomaster.set_blaster_led(int handle, float intensity)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    See also
+                                                </td>
+<td class="apiTableRightDescr"> <a href="#create_s1">simRobomaster.create_s1</a> <a href="#enable_gimbal">simRobomaster.enable_gimbal</a> <a href="#get_gimbal_angles">simRobomaster.get_gimbal_angles</a> <a href="#move_gimbal">simRobomaster.move_gimbal</a> <a href="#set_gimbal_target_speeds">simRobomaster.set_gimbal_target_speeds</a> <a href="#set_mode">simRobomaster.set_mode</a>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="set_gimbal_target_speeds" id="set_gimbal_target_speeds"></a>simRobomaster.set_gimbal_target_speeds</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Set the gimbal target angular speeds</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">simRobomaster.set_gimbal_target_speeds(int handle, float yaw, float pitch)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>yaw</strong> (float): The target yaw speed [rad/s]</div>
+<div>
+<strong>pitch</strong> (float): The target pitch speed [rad/s]</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">simRobomaster.set_gimbal_target_speeds(int handle, float yaw, float pitch)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    See also
+                                                </td>
+<td class="apiTableRightDescr"> <a href="#create_s1">simRobomaster.create_s1</a> <a href="#enable_gimbal">simRobomaster.enable_gimbal</a> <a href="#get_gimbal_angles">simRobomaster.get_gimbal_angles</a> <a href="#move_gimbal">simRobomaster.move_gimbal</a> <a href="#set_blaster_led">simRobomaster.set_blaster_led</a> <a href="#set_mode">simRobomaster.set_mode</a>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="set_gripper_target" id="set_gripper_target"></a>simRobomaster.set_gripper_target</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Set the gripper target state</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">simRobomaster.set_gripper_target(int handle, string state, float power=0.5)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>state</strong> (string): The target state, one of `"open"`, `"close"`, `"pause"`</div>
+<div>
+<strong>power</strong> (float, default: 0.5): The desired power level between 0 and 1</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">simRobomaster.set_gripper_target(int handle, string state, float power=0.5)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    See also
+                                                </td>
+<td class="apiTableRightDescr"> <a href="#create_ep">simRobomaster.create_ep</a> <a href="#enable_servo">simRobomaster.enable_servo</a> <a href="#get_arm_position">simRobomaster.get_arm_position</a> <a href="#get_gripper">simRobomaster.get_gripper</a> <a href="#get_servo_angle">simRobomaster.get_servo_angle</a> <a href="#move_arm">simRobomaster.move_arm</a> <a href="#move_servo">simRobomaster.move_servo</a> <a href="#set_servo_mode">simRobomaster.set_servo_mode</a> <a href="#set_servo_target_speed">simRobomaster.set_servo_target_speed</a>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="set_led_effect" id="set_led_effect"></a>simRobomaster.set_led_effect</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Apply a LED effect</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">simRobomaster.set_led_effect(int handle, float r, float g, float b, string effect="on", int mask=0xFF, int led_mask=0xFF, float period_on=0.5, float period_off=0.5, bool loop=true)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>r</strong> (float): The red intensity between 0 and 1</div>
+<div>
+<strong>g</strong> (float): The green intensity between 0 and 1</div>
+<div>
+<strong>b</strong> (float): The blue intensity between 0 and 1</div>
+<div>
+<strong>effect</strong> (string, default: "on"): The effect to apply, on of `"on"`, `"off"`, `"breath"`, `"flash"`, `"scrolling"`</div>
+<div>
+<strong>mask</strong> (int, default: 0xFF): A bit-mask to select LED:
+                  chassis back (0x1)
+                  chassis front (0x2)
+                  chassis left (0x4)
+                  chassis right (0x8)
+                  gimbal left (0x10)
+                  gimbal right (0x20)
+                </div>
+<div>
+<strong>led_mask</strong> (int, default: 0xFF): A bit mask to select the individual portions of gimbal LEDs</div>
+<div>
+<strong>period_on</strong> (float, default: 0.5): The duration of the on-time [ms]</div>
+<div>
+<strong>period_off</strong> (float, default: 0.5): The duration of the off-time [ms]</div>
+<div>
+<strong>loop</strong> (bool, default: true): Whever the effect should be repeated continously</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">simRobomaster.set_led_effect(int handle, float r, float g, float b, string effect="on", int mask=0xFF, int led_mask=0xFF, float period_on=0.5, float period_off=0.5, bool loop=true)<br>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="set_log_level" id="set_log_level"></a>simRobomaster.set_log_level</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Set the log level of all Robomaster controllers. Log are displayed on the console.</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">simRobomaster.set_log_level(string log_level)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam"><div>
+<strong>log_level</strong> (string): The log level, one of `"debug"`,  `"info"`, `"warning"`, `"error"`</div></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">simRobomaster.set_log_level(string log_level)<br>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="set_mode" id="set_mode"></a>simRobomaster.set_mode</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Set how the robot controller couples chassis and gimbal </td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">simRobomaster.set_mode(int handle, string mode)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>mode</strong> (string): On of `"free"` (uncoupled), `"gimbal_lead"` (the chassis follows the gimbal), `"chassis_lead"` (the gimbal follows the chassis)</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">simRobomaster.set_mode(int handle, string mode)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    See also
+                                                </td>
+<td class="apiTableRightDescr"> <a href="#create_s1">simRobomaster.create_s1</a> <a href="#enable_gimbal">simRobomaster.enable_gimbal</a> <a href="#get_gimbal_angles">simRobomaster.get_gimbal_angles</a> <a href="#move_gimbal">simRobomaster.move_gimbal</a> <a href="#set_blaster_led">simRobomaster.set_blaster_led</a> <a href="#set_gimbal_target_speeds">simRobomaster.set_gimbal_target_speeds</a>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="set_servo_mode" id="set_servo_mode"></a>simRobomaster.set_servo_mode</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Set the control mode of one the servo motors</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">simRobomaster.set_servo_mode(int handle, int servo, string mode)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>servo</strong> (int): The index of the servo (0, 1, 2)</div>
+<div>
+<strong>mode</strong> (string): The control mode, one of `"angle"` and `"speed"`</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">simRobomaster.set_servo_mode(int handle, int servo, string mode)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    See also
+                                                </td>
+<td class="apiTableRightDescr"> <a href="#create_ep">simRobomaster.create_ep</a> <a href="#enable_servo">simRobomaster.enable_servo</a> <a href="#get_arm_position">simRobomaster.get_arm_position</a> <a href="#get_gripper">simRobomaster.get_gripper</a> <a href="#get_servo_angle">simRobomaster.get_servo_angle</a> <a href="#move_arm">simRobomaster.move_arm</a> <a href="#move_servo">simRobomaster.move_servo</a> <a href="#set_gripper_target">simRobomaster.set_gripper_target</a> <a href="#set_servo_target_speed">simRobomaster.set_servo_target_speed</a>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="set_servo_target_speed" id="set_servo_target_speed"></a>simRobomaster.set_servo_target_speed</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Set the target speed of one the servo motors</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">simRobomaster.set_servo_target_speed(int handle, int servo, float speed)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>servo</strong> (int): The index of the servo (0, 1, 2)</div>
+<div>
+<strong>speed</strong> (float): The target speed [rad/s]</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">simRobomaster.set_servo_target_speed(int handle, int servo, float speed)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    See also
+                                                </td>
+<td class="apiTableRightDescr"> <a href="#create_ep">simRobomaster.create_ep</a> <a href="#enable_servo">simRobomaster.enable_servo</a> <a href="#get_arm_position">simRobomaster.get_arm_position</a> <a href="#get_gripper">simRobomaster.get_gripper</a> <a href="#get_servo_angle">simRobomaster.get_servo_angle</a> <a href="#move_arm">simRobomaster.move_arm</a> <a href="#move_servo">simRobomaster.move_servo</a> <a href="#set_gripper_target">simRobomaster.set_gripper_target</a> <a href="#set_servo_mode">simRobomaster.set_servo_mode</a>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="set_target_twist" id="set_target_twist"></a>simRobomaster.set_target_twist</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Set the chassis target twist (linear and angular velocity)</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">simRobomaster.set_target_twist(int handle, CS_Twist2D twist)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>twist</strong> (CS_Twist2D): The target twist</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">simRobomaster.set_target_twist(int handle, CS_Twist2D twist)<br>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="set_target_wheel_speeds" id="set_target_wheel_speeds"></a>simRobomaster.set_target_wheel_speeds</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Set the target wheel speeds</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">simRobomaster.set_target_wheel_speeds(int handle, CS_WheelFloatValues speeds)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>speeds</strong> (CS_WheelFloatValues): The target wheel speeds in m/s</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">simRobomaster.set_target_wheel_speeds(int handle, CS_WheelFloatValues speeds)<br>
+</td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="set_vision_class" id="set_vision_class"></a>simRobomaster.set_vision_class</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                    Description
+                                                </td>
+<td class="apiTableRightDescr">Set the vision class associated to a model</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLSyn">Lua synopsis</td>
+<td class="apiTableRightLSyn">simRobomaster.set_vision_class(int handle, string name, int type)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Lua parameters</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The RoboMaster controller handle</div>
+<div>
+<strong>name</strong> (string): TThe name of the model (without the leading "/")</div>
+<div>
+<strong>type</strong> (int): The vision type associated to the model (enum of type VISION)</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLRet">Lua return values</td>
+<td class="apiTableRightLRet"></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftPSyn">Python synopsis</td>
+<td class="apiTableRightPSyn">simRobomaster.set_vision_class(int handle, string name, int type)<br>
+</td>
+</tr>
+</table>
+<br>
+</td></tr>
+<tr><td id="enums" class="section">
+<br><br><h1>Constants</h1>
+<p>Constants used in the various functions. Refer to each constant using <i>enumName.constantName</i>, i.e. <b>simUI.curve_type.xy</b> for <b>xy</b> constant in <b>simUI.curve_type</b> enum.</p>
+<h3 class="subsectionBar">
+<a name="enum:VISION" id="enum:VISION"></a>simRobomaster.VISION</h3>
+<table class="apiConstantsTable"><tbody><tr><td>
+<div><strong>PERSON</strong></div>
+<div><strong>ROBOT</strong></div>
+</td></tr></tbody></table>
+</td></tr>
+<tr><td id="structs" class="section">
+<br><br><h1>Data structures</h1>
+<p>Data structures are used to pass complex data around. Create data structures in Lua in the form of a map, e.g.: <code>{line_size=3, add_to_legend=false, selectable=true}</code></p>
+<h3 class="subsectionBar">
+<a name="struct:CS_Twist2D" id="struct:CS_Twist2D"></a>CS_Twist2D</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                Description
+                                            </td>
+<td class="apiTableRightDescr"><br></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Fields</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>x</strong> (float, default: 0.0): Longitudinal linear speed [m/s], positive towards forward</div>
+<div>
+<strong>y</strong> (float, default: 0.0): Transversal linear speed [m/s], positive towards left</div>
+<div>
+<strong>theta</strong> (float, default: 0.0): Angular speed [rad/s] around the vertical axis</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                See also
+                                            </td>
+<td class="apiTableRightDescr"></td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="struct:CS_Pose2D" id="struct:CS_Pose2D"></a>CS_Pose2D</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                Description
+                                            </td>
+<td class="apiTableRightDescr"><br></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Fields</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>x</strong> (float, default: 0.0): x-component of position [m]</div>
+<div>
+<strong>y</strong> (float, default: 0.0): y-component of position [m]</div>
+<div>
+<strong>theta</strong> (float, default: 0.0): orintation [rad]</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                See also
+                                            </td>
+<td class="apiTableRightDescr"></td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="struct:CS_WheelFloatValues" id="struct:CS_WheelFloatValues"></a>CS_WheelFloatValues</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                Description
+                                            </td>
+<td class="apiTableRightDescr">A structure with one number per wheel<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Fields</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>front_left</strong> (float, default: 0.0): Front left wheel value</div>
+<div>
+<strong>front_right</strong> (float, default: 0.0): Front right wheel value</div>
+<div>
+<strong>rear_left</strong> (float, default: 0.0): Rear left wheel value</div>
+<div>
+<strong>rear_right</strong> (float, default: 0.0): Rear right wheel value</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                See also
+                                            </td>
+<td class="apiTableRightDescr"></td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="struct:CS_Odometry" id="struct:CS_Odometry"></a>CS_Odometry</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                Description
+                                            </td>
+<td class="apiTableRightDescr">Odometry (pose and twist)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Fields</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>pose</strong> (CS_Pose2D): The pose</div>
+<div>
+<strong>twist</strong> (CS_Twist2D): The twist</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                See also
+                                            </td>
+<td class="apiTableRightDescr"></td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="struct:CS_Vector3" id="struct:CS_Vector3"></a>CS_Vector3</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                Description
+                                            </td>
+<td class="apiTableRightDescr">A 3D vector<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Fields</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>x</strong> (float): x-component</div>
+<div>
+<strong>y</strong> (float): y-component</div>
+<div>
+<strong>z</strong> (float): z-component</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                See also
+                                            </td>
+<td class="apiTableRightDescr"></td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="struct:CS_IMU" id="struct:CS_IMU"></a>CS_IMU</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                Description
+                                            </td>
+<td class="apiTableRightDescr">IMU state<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Fields</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>angular_velocity</strong> (CS_Vector3): Angular velocity</div>
+<div>
+<strong>acceleration</strong> (CS_Vector3): Acceleration</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                See also
+                                            </td>
+<td class="apiTableRightDescr"></td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="struct:CS_Attitude" id="struct:CS_Attitude"></a>CS_Attitude</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                Description
+                                            </td>
+<td class="apiTableRightDescr">Attitude (Tait–Bryan)<br>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Fields</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>yaw</strong> (float): Yaw [rad]</div>
+<div>
+<strong>pitch</strong> (float): Pitch [rad]</div>
+<div>
+<strong>roll</strong> (float): Roll [rad]</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                See also
+                                            </td>
+<td class="apiTableRightDescr"></td>
+</tr>
+</table>
+<br><h3 class="subsectionBar">
+<a name="struct:CS_BoundingBox" id="struct:CS_BoundingBox"></a>CS_BoundingBox</h3>
+<table class="apiTable">
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                Description
+                                            </td>
+<td class="apiTableRightDescr"><br></td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftLParam">Fields</td>
+<td class="apiTableRightLParam">
+<div>
+<strong>handle</strong> (int): The handle of the object</div>
+<div>
+<strong>x</strong> (float): Horizontal position in the image, normalized between 0 (left) and 1 (right)</div>
+<div>
+<strong>y</strong> (float): Vertical position in the image, normalized between 0 (bottom) and 1 (top)</div>
+<div>
+<strong>width</strong> (float): Width as fraction of the frame width</div>
+<div>
+<strong>height</strong> (float): Height as fraction of the frame height</div>
+</td>
+</tr>
+<tr class="apiTableTr">
+<td class="apiTableLeftDescr">
+                                                See also
+                                            </td>
+<td class="apiTableRightDescr"></td>
+</tr>
+</table>
+<br>
+</td></tr>
+<tr><td id="scriptFunctions" class="section"></td></tr>
+</table></div>
+<script type="text/javascript">
+//
+view = getParameterByName('view')
+document.getElementById('alphabetical').style.display = view == 'alphabetical' ? 'table-cell' : 'none'
+document.getElementById('commands').style.display = view == null ? 'table-cell' : 'none'
+document.getElementById('enums').style.display = view == null ? 'table-cell' : 'none'
+document.getElementById('structs').style.display = view == null ? 'table-cell' : 'none'
+document.getElementById('scriptFunctions').style.display = view == null ? 'table-cell' : 'none'
+//
+                </script><link rel="stylesheet" href="../js/hljs/11.8.0/styles/default.min.css">
+<script src="../js/hljs/11.8.0/highlight.min.js"></script><script src="../js/hljs/11.8.0/languages/cmake.min.js"></script><script src="../js/hljs/11.8.0/languages/cpp.min.js"></script><script src="../js/hljs/11.8.0/languages/java.min.js"></script><script src="../js/hljs/11.8.0/languages/javascript.min.js"></script><script src="../js/hljs/11.8.0/languages/lua.min.js"></script><script src="../js/hljs/11.8.0/languages/matlab.min.js"></script><script src="../js/hljs/11.8.0/languages/python.min.js"></script><script src="../js/hljs/11.8.0/languages/rust.min.js"></script><script src="../js/hljs/11.8.0/languages/xml.min.js"></script><script>document.querySelectorAll('code.hljs').forEach(el => {hljs.highlightElement(el);})</script>
+</body>
+</html>
