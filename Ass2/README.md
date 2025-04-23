@@ -12,7 +12,7 @@ start coppelliasim bash command:
 ```
 
 ```bash
-    ros2 launch robomaster_example controller_ex2.launch name:=/rm0
+    ros2 launch robomaster_example controller_ex4.launch name:=/rm0
 ```
 
 
