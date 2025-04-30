@@ -1,5 +1,7 @@
 # Comandi utili
 
+```bash
+
 cd /home/none/Usi_Robotics/RoboticsAss1/
 
 ros2 run turtlesim turtlesim_node
@@ -14,9 +16,15 @@ source install/setup.bash
 
 
 ros2 pkg list | grep <pakagename>
+```
 
 ### Creazione di un nuovo pakage: 
+
+RICORDA: da eseguire nella cartella /src!!!
+
+```bash
 ros2 pkg create --build-type ament_python <new_pakage_name> 
+```
 
 Mettiamo che abbiamo creato un nuovo file ass1 nel pakage src/new_pakage_name dobbiamo modifucare il file src/new_pakage_name/setup.py 
 
