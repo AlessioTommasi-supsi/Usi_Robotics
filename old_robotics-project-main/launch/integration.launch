@@ -1,0 +1,5 @@
+<launch>
+  <include file="$(find-pkg-share robomaster_ros)/launch/s1.launch">
+    <arg name="video_resolution" value="720"/>
+  </include>
+</launch>
