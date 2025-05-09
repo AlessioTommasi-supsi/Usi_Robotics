@@ -41,3 +41,8 @@ start coppelliasim bash command:
 ```bash
     source install/setup.sh
 ```
+
+Comando per pubblicare topic grafico
+```bash
+    rtq
+```
