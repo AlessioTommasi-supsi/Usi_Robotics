@@ -1,1 +1,0 @@
-/home/none/Scrivania/Usi_Robotics/usi_rob/new/robotics-lab-usi-robomaster/src/simExtROS2/lua/simROS2.lua
